@@ -1,0 +1,7 @@
+interface:
+  display_name: Tdd
+  short_description: Use only when the user explicitly asks for TDD, a failing test,
+    or a regression test, OR when the bug has an obvious cheap local test target
+  default_prompt: Use $tdd for this task.
+policy:
+  allow_implicit_invocation: false

@@ -1,0 +1,7 @@
+interface:
+  display_name: Architect
+  short_description: Sketch types, signatures, and module structure before code, then
+    stay in the loop while implementation fills in
+  default_prompt: Use $architect for this task.
+policy:
+  allow_implicit_invocation: false

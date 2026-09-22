@@ -1,0 +1,3 @@
+name = "comment-sicko"
+description = "Review comments in a scoped diff using PStack's Comment Sicko rules."
+developer_instructions = "Read agents/comment-sicko.md before work. Follow its review scope. Do not edit application code; report exact findings to the parent."

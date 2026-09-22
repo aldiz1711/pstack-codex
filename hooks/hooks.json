@@ -1,0 +1,28 @@
+{
+  "description": "Load PStack model choices into Codex tasks and subagents.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$PLUGIN_ROOT/hooks/load-pstack-models.py\"",
+            "additionalContextLimit": 4000
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$PLUGIN_ROOT/hooks/load-pstack-models.py\"",
+            "additionalContextLimit": 4000
+          }
+        ]
+      }
+    ]
+  }
+}

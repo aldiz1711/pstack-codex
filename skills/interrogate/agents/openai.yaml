@@ -1,0 +1,7 @@
+interface:
+  display_name: Interrogate
+  short_description: Use for "interrogate", "adversarial review", "multi-model review",
+    "challenge this", "stress test this code", "find blind spots", or "tear this apart"
+  default_prompt: Use $interrogate for this task.
+policy:
+  allow_implicit_invocation: false

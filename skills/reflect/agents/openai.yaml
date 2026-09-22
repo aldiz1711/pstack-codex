@@ -1,0 +1,7 @@
+interface:
+  display_name: Reflect
+  short_description: Spawn three parallel review subagents over the active transcript,
+    surface learnings, and route each to a concrete edit on an existing skill
+  default_prompt: Use $reflect for this task.
+policy:
+  allow_implicit_invocation: false

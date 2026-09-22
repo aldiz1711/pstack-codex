@@ -1,0 +1,8 @@
+interface:
+  display_name: How
+  short_description: Use for "how does X work", code walkthroughs before changing
+    something, and placement / ownership / layering questions ("where should this
+    live", "which pack...
+  default_prompt: Use $how for this task.
+policy:
+  allow_implicit_invocation: false

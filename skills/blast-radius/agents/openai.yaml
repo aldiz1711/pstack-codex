@@ -1,0 +1,8 @@
+interface:
+  display_name: Blast Radius
+  short_description: Find what a change could break somewhere else before it ships,
+    beyond the diff, and prove the one fact it's safe because of by running real code
+    instead of w...
+  default_prompt: Use $blast-radius for this task.
+policy:
+  allow_implicit_invocation: false

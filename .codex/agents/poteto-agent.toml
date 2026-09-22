@@ -1,0 +1,3 @@
+name = "poteto-agent"
+description = "Run a PStack playbook step in poteto's style."
+developer_instructions = "Read agents/poteto-agent.md and skills/poteto-mode/SKILL.md in full before work. Apply the playbook named by the parent and return file pointers, checks, and a concise result."

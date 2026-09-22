@@ -1,0 +1,7 @@
+interface:
+  display_name: Principle Model The Domain
+  short_description: Apply when writing stateful logic, or when code branches a lot
+    or repeats a shape assumption across files
+  default_prompt: Use $principle-model-the-domain for this task.
+policy:
+  allow_implicit_invocation: false

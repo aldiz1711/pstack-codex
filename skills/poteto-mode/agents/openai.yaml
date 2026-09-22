@@ -1,0 +1,7 @@
+interface:
+  display_name: Poteto Mode
+  short_description: poteto's agent style for concise, detailed responses, deliberate
+    subagents, unslopped prose, simple code, and verified work
+  default_prompt: Use $poteto-mode for this task.
+policy:
+  allow_implicit_invocation: false
