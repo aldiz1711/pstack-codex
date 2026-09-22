@@ -12,6 +12,10 @@ codex plugin add pstack-codex@personal
 
 Codex confirms the plugin is installed. Start a new task to load its skills.
 
+## Set up pull request reviews
+
+Codex's `/review` and delegated `review-agent` inspect local changes. For Cursor Bugbot's GitHub role, connect the repository to Codex Cloud and enable Code Review in Codex settings. Ask for a review with `@codex review`, or enable automatic reviews for the repository. Put repository-specific reviewer guidance under `## Code Review Rules` in the applicable `AGENTS.md`. PStack's Babysit playbook triages the resulting PR threads; installing PStack does not enable Codex Cloud reviews for a repository. See [Codex Code Review](https://developers.openai.com/codex/cloud/code-review) and the [local `/review` guide](https://learn.chatgpt.com/docs/codex/cli).
+
 ## Pick your models
 
 Run:

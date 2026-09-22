@@ -1,10 +1,10 @@
-# Bugbot triage
+# Automated review triage
 
-Use this reference when the Babysit playbook (`../playbooks/babysit.md`) handles Bugbot or review-automation comments. The goal is not to ignore Bugbot by default. The goal is to stop treating every comment as a required code change.
+Use this reference when the Babysit playbook (`../playbooks/babysit.md`) handles Codex Code Review or other automated review comments. The goal is not to ignore review findings by default. The goal is to stop treating every comment as a required code change.
 
 ## Decision rubric
 
-Classify each Bugbot thread before acting:
+Classify each automated review thread before acting:
 
 - `fix`: The comment identifies a plausible correctness, security, privacy, data loss, auth, billing, migration, idempotency, race, or shipped-behavior issue. Fix it in the lowest owning PR, then reply with the commit SHA and resolve the thread.
 - `dismiss`: The comment matches a documented low-risk noisy pattern, and the current code/context proves the concern does not need a code change. Reply with a short reason and resolve the thread.
@@ -29,6 +29,8 @@ Add future patterns in this shape:
 Use `candidate` for one or two examples. Use `recurring` after multiple real dismissals. Use `strong` only when the pattern is narrow, repeatedly verified, and low-risk.
 
 ## Recurring skip candidates
+
+The examples below preserve lessons from earlier PStack reviews, including Cursor Bugbot findings. Treat each as a hypothesis and verify it against the current code before applying it to another review system.
 
 ### Intentional UI or design-system visual changes
 
