@@ -4,10 +4,11 @@ In this page you install the plugin, pick which models pstack uses, and run your
 
 ## Install the plugin
 
-After adding this repository to your personal Codex plugin marketplace, run:
+Add this repository as a Codex plugin marketplace and install PStack:
 
-```text
-codex plugin add pstack-codex@personal
+```sh
+codex plugin marketplace add aldiz1711/pstack-codex
+codex plugin add pstack-codex@pstack-codex
 ```
 
 Codex confirms the plugin is installed. Start a new task to load its skills.
