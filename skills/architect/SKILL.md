@@ -29,7 +29,7 @@ Skip Phase A only when the work is genuinely greenfield with no surrounding syst
 
 Run the **arena** skill with the design-sketch task and the Phase A grounding artifacts. Pass `references/runner-prompt.md` as each runner's prompt. Each candidate produces a design package shaped per `references/rationale-template.md`.
 
-Use your configured architect runners (defaults `gpt-6-astra` at max reasoning, `gpt-5.6-sol` at max reasoning, `gpt-5.6-luna` at xhigh reasoning, `gpt-5.6-terra` at xhigh reasoning).
+Use your configured architect runners (default four independent `gpt-6-astra` runners at max reasoning).
 
 Design it twice. Require at least two structurally distinct candidates before synthesis, even when the first looks sufficient. This is the **exhaust-the-design-space** principle skill made concrete. Whole-shape alternatives, not point fixes inside one shape.
 

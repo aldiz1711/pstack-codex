@@ -24,7 +24,7 @@ Launch three Codex subagents concurrently when the available concurrency permits
 | Lens | `model` | Prompt template |
 |---|---|---|
 | Judgment | your configured reflect-judgment model (default `gpt-6-astra` at max reasoning) | `references/judgment-reviewer.md` |
-| Tooling | your configured reflect-tooling model (default `gpt-5.6-sol` at max reasoning) | `references/tooling-reviewer.md` |
+| Tooling | your configured reflect-tooling model (default `gpt-6-sol` at max reasoning) | `references/tooling-reviewer.md` |
 | Divergent | your configured reflect-judgment model (default `gpt-6-astra` at max reasoning) | `references/divergent-reviewer.md` |
 
 Pass each template verbatim, substituting the task history or digest where marked. Reviewers return findings in the Codex subagent response body.

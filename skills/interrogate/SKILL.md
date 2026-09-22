@@ -37,9 +37,9 @@ Launch reviewers concurrently up to the available Codex agent limit, queuing the
 | Subagent | Default model |
 |----------|---------------|
 | Reviewer A | `gpt-6-astra` at max reasoning |
-| Reviewer B | `gpt-5.6-sol` at max reasoning |
-| Reviewer C | `gpt-5.6-luna` at xhigh reasoning |
-| Reviewer D | `gpt-5.6-terra` at xhigh reasoning |
+| Reviewer B | `gpt-6-sol` at max reasoning |
+| Reviewer C | `gpt-6-luna` at xhigh reasoning |
+| Reviewer D | `gpt-6-sol` at xhigh reasoning |
 
 For each reviewer:
 - use Codex agent `pstack-readonly`, whose sandbox is read-only; do not replace it with a writable agent

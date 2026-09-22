@@ -24,7 +24,7 @@ $architect with checkpoint. stop and show me before implementing.
 $arena take my prompt to the arena verbatim. i want to compare their proposals with yours.
 ```
 
-[`$arena`](../../skills/arena/SKILL.md) is the general tool underneath. N subagents attempt the same design or code brief in parallel, each writing to its own worktree or directory. A read-only judge, on a different model family when your configuration allows one, scores every candidate against a rubric. The coordinator reads each candidate end to end, picks a base, grafts in the best ideas from the losers, and verifies the result.
+[`$arena`](../../skills/arena/SKILL.md) is the general tool underneath. N subagents attempt the same design or code brief in parallel, each writing to its own worktree or directory. By default they run independently on `gpt-6-astra` at max reasoning, keeping candidate capability comparable. A separate read-only judge scores every candidate against a rubric. The coordinator reads each candidate end to end, picks a base, grafts in the best ideas from the losers, and verifies the result.
 
 ```mermaid
 flowchart LR

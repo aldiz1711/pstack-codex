@@ -23,7 +23,7 @@ If `~/.codex/pstack-models.md` exists, read its budget and role values. Otherwis
 
 **(b) Apply it.** Store the reasoning effort separately from the model name. `unlimited` leaves each role at its listed effort. `large`, `medium`, and `small` target `xhigh`, `high`, and `medium`. If a model does not support the target effort, use its highest supported effort at or below the target or mark the role as needing a choice. Do not change `inherit-parent` or `auto`.
 
-**(c) Show the roles and confirm.** Show every role with its model and effort, flagging unavailable choices. Offer the available models, supported efforts, `inherit-parent`, and `auto` as alternatives. Panel roles (arena runners, architect runners, interrogate reviewers) contain one entry per desired subagent. `arena cross-judge pool` contains candidates from which Arena selects one, preferring a different model family from the parent's when possible. The current Codex concurrency limit may require running a panel in waves.
+**(c) Show the roles and confirm.** Show every role with its model and effort, flagging unavailable choices. Offer the available models, supported efforts, `inherit-parent`, and `auto` as alternatives. Panel roles (arena runners, architect runners, interrogate reviewers) contain one entry per desired subagent. `arena cross-judge pool` contains candidates from which Arena selects one, preferring a different model at comparable capability when configured; otherwise it uses a separate run of the same model. The current Codex concurrency limit may require running a panel in waves.
 
 ### 4. Validate
 
@@ -36,23 +36,23 @@ Overwrite `~/.codex/pstack-models.md` so reruns stay idempotent. This is PStack'
 ```text
 # pstack model configuration. Delete a line to use the skill default.
 # budget: unlimited (max)
-feature, refactoring: gpt-5.6-luna | xhigh
-bug-fix: gpt-5.6-luna | xhigh
-perf-issue: gpt-5.6-luna | xhigh
-hillclimb: gpt-5.6-luna | xhigh
+feature, refactoring: gpt-6-luna | xhigh
+bug-fix: gpt-6-luna | xhigh
+perf-issue: gpt-6-luna | xhigh
+hillclimb: gpt-6-luna | xhigh
 judgment and prose: gpt-6-astra | max
 hardest tasks: gpt-6-astra | max
-how explorer: gpt-5.6-luna | xhigh
+how explorer: gpt-6-luna | xhigh
 how explainer: gpt-6-astra | max
-why investigators: gpt-5.6-luna | xhigh
+why investigators: gpt-6-luna | xhigh
 why synthesizer: gpt-6-astra | max
-reflect tooling: gpt-5.6-sol | max
+reflect tooling: gpt-6-sol | max
 reflect judgment, divergent, synthesizer: gpt-6-astra | max
-arena runners: gpt-6-astra | max, gpt-5.6-sol | max, gpt-5.6-luna | xhigh, gpt-5.6-terra | xhigh
-arena cross-judge pool: gpt-6-astra | max, gpt-5.6-sol | max, gpt-5.6-luna | xhigh, gpt-5.6-terra | xhigh
-swarm workers: gpt-5.6-luna | xhigh
-architect runners: gpt-6-astra | max, gpt-5.6-sol | max, gpt-5.6-luna | xhigh, gpt-5.6-terra | xhigh
-interrogate reviewers: gpt-6-astra | max, gpt-5.6-sol | max, gpt-5.6-luna | xhigh, gpt-5.6-terra | xhigh
+arena runners: gpt-6-astra | max, gpt-6-astra | max, gpt-6-astra | max, gpt-6-astra | max
+arena cross-judge pool: gpt-6-astra | max
+swarm workers: gpt-6-luna | xhigh
+architect runners: gpt-6-astra | max, gpt-6-astra | max, gpt-6-astra | max, gpt-6-astra | max
+interrogate reviewers: gpt-6-astra | max, gpt-6-sol | max, gpt-6-luna | xhigh, gpt-6-sol | xhigh
 ```
 
 Use only confirmed available combinations. If a default is unavailable, choose an equivalent the user can access or `inherit-parent` rather than writing a broken entry.
