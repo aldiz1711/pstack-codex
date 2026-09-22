@@ -42,8 +42,9 @@ Launch reviewers concurrently up to the available Codex agent limit, queuing the
 | Reviewer D | `gpt-5.6-terra` at xhigh reasoning |
 
 For each reviewer:
+- use Codex agent `pstack-readonly`, whose sandbox is read-only; do not replace it with a writable agent
 - configured model and reasoning effort from the `interrogate reviewers` entry, or the table default with no configured line
-- instruction to read and report without writing
+- pass the same review prompt and rubric
 
 If a model slug is rejected as unresolvable when you try to spawn the subagent, check the valid slugs in the Codex subagent tool's error message, pick the closest equivalent (prefer the highest-reasoning tier of the same family), spawn with the valid slug, and open a separate PR to update the configured value or default table. Do not block the review on the slug issue. If the configured value is `inherit-parent` or `auto`, omit `model` instead. Never treat those aliases as broken slugs or enter this fallback for them.
 

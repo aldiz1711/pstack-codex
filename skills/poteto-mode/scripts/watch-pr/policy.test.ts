@@ -91,6 +91,39 @@ describe("readiness truth table", () => {
 });
 
 describe("snapshot query planning", () => {
+  it("attaches submitted bot review passes to unresolved threads", async () => {
+    const reader = fakeReader({
+      threads: [{
+        id: "thread-1",
+        firstComment: {
+          body: "Check this path",
+          createdAt: "now",
+          path: "a.ts",
+          line: 1,
+          authorLogin: "reviewer[bot]",
+        },
+        automatedReviewPasses: null,
+      }],
+      submissions: [{
+        id: 1,
+        authorLogin: "reviewer[bot]",
+        authorType: "Bot",
+        state: "COMMENTED",
+        submittedAt: "2026-09-23T00:00:00Z",
+      }],
+    });
+    const snapshot = await readSnapshot({
+      reader,
+      context: context(2),
+      pendingHistory: "omit",
+      allowDraft: false,
+    });
+    expect(snapshot.kind).toBe("open");
+    if (snapshot.kind !== "open") throw new Error("expected open snapshot");
+    expect(snapshot.threads).toMatchObject([{ automatedReviewPasses: 1 }]);
+    expect(reader.calls).toContain("reviewSubmissions");
+  });
+
   it("does not query commit rollups while queued checks are pending", async () => {
     const reader = fakeReader({
       fastPath: { kind: "checks", checks: [pendingCheck()] },

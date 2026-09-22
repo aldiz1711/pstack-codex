@@ -37,7 +37,7 @@ If a candidate fails to produce output, proceed with N-1 and note the dropout in
 
 ## Phase C: Cross-judge
 
-After all Phase B candidates complete, choose one model from the `arena cross-judge pool` in `~/.codex/pstack-models.md` when present. Otherwise use `gpt-6-astra` at max reasoning, `gpt-5.6-sol` at max reasoning, `gpt-5.6-luna` at xhigh reasoning, `gpt-5.6-terra` at xhigh reasoning. Prefer a different model family from the parent's. Spawn one readonly judge subagent on that model. It sees the rubric and the candidates by path label, scores each criterion, and recommends a base with rationale. It runs in parallel with the parent's reading in Phase D, not with the candidates themselves. Don't spawn the judge while candidates are still writing.
+After all Phase B candidates complete, choose one model from the `arena cross-judge pool` in `~/.codex/pstack-models.md` when present. Otherwise use `gpt-6-astra` at max reasoning, `gpt-5.6-sol` at max reasoning, `gpt-5.6-luna` at xhigh reasoning, `gpt-5.6-terra` at xhigh reasoning. Prefer a different model family from the parent's. Spawn one judge subagent using Codex agent `pstack-readonly` and its read-only sandbox. It sees the rubric and the candidates by path label, scores each criterion, and recommends a base with rationale. It runs in parallel with the parent's reading in Phase D, not with the candidates themselves. Don't spawn the judge while candidates are still writing.
 
 ## Phase D: Pick a base
 

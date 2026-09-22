@@ -356,7 +356,67 @@ export function parseReviewThreads(value: unknown): readonly T.ReviewThread[] {
   }
   return threads
     .filter((thread) => !thread.resolved)
-    .map(({ id, firstComment }) => ({ id, firstComment }));
+    .map(({ id, firstComment }) => ({
+      id,
+      firstComment,
+      automatedReviewPasses: null,
+    }));
+}
+export function parseReviewSubmissions(value: unknown): readonly T.ReviewSubmission[] {
+  const pages = list(value, "review submissions.pages");
+  return pages.flatMap((page, pageIndex) =>
+    list(page, `review submissions.pages[${pageIndex}]`).map((item) => {
+      const review = record(item, "review submission");
+      const author =
+        review.user === null
+          ? null
+          : record(review.user, "review submission.user");
+      if (!Number.isInteger(review.id)) missing("review submission.id", review.id);
+      return {
+        id: Number(review.id),
+        authorLogin:
+          author === null
+            ? ""
+            : string(author.login, "review submission.user.login"),
+        authorType:
+          author === null
+            ? ""
+            : string(author.type, "review submission.user.type"),
+        state: string(review.state, "review submission.state"),
+        submittedAt: optionalString(
+          review.submitted_at,
+          "review submission.submitted_at"
+        ),
+      };
+    })
+  );
+}
+const reviewerLogin = (login: string): string =>
+  login.toLowerCase().replace(/\[bot\]$/, "");
+export function withAutomatedReviewPasses(
+  threads: readonly T.ReviewThread[],
+  submissions: readonly T.ReviewSubmission[]
+): readonly T.ReviewThread[] {
+  const passes = new Map<string, Set<number>>();
+  for (const review of submissions) {
+    if (
+      review.authorType.toLowerCase() !== "bot" ||
+      review.submittedAt === null ||
+      review.state === "PENDING" ||
+      review.state === "DISMISSED"
+    )
+      continue;
+    const login = reviewerLogin(review.authorLogin);
+    const ids = passes.get(login) ?? new Set<number>();
+    ids.add(review.id);
+    passes.set(login, ids);
+  }
+  return threads.map((thread) => ({
+    ...thread,
+    automatedReviewPasses:
+      passes.get(reviewerLogin(thread.firstComment?.authorLogin ?? ""))?.size ??
+      null,
+  }));
 }
 export function parsePullRequest(
   value: unknown,
@@ -532,6 +592,19 @@ export class GhGitHubReader implements T.GitHubReader {
   ): Promise<readonly T.ReviewThread[]> {
     return parseReviewThreads(
       await runJson(graphqlArgs(REVIEW_THREADS_QUERY, context))
+    );
+  }
+  async reviewSubmissions(
+    context: T.PrContext
+  ): Promise<readonly T.ReviewSubmission[]> {
+    return parseReviewSubmissions(
+      await runJson([
+        "gh",
+        "api",
+        `repos/${context.owner}/${context.repo}/pulls/${context.number}/reviews?per_page=100`,
+        "--paginate",
+        "--slurp",
+      ])
     );
   }
   async commitRollups(

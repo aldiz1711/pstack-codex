@@ -60,6 +60,7 @@ function threadLine(thread: T.ReviewThread): string {
     comment?.line ?? "None",
     comment?.authorLogin ?? "None",
     (comment?.body ?? "").split(/\r?\n/, 1)[0]?.slice(0, 180) ?? "",
+    `automatedReviewPasses=${thread.automatedReviewPasses ?? "unknown"}`,
   ].join(" ");
 }
 type StatusQueryBlocker = {

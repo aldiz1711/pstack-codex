@@ -5,8 +5,11 @@ import {
   mapRollupNode,
   orderStack,
   parsePullRequest,
+  parseReviewSubmissions,
+  parseReviewThreads,
   resolveChecks,
   resolveContext,
+  withAutomatedReviewPasses,
 } from "./github.ts";
 import {
   fakeReader,
@@ -189,6 +192,66 @@ describe("closed enum parsing", () => {
       });
     }
   });
+});
+
+it("counts distinct submitted bot reviews for each unresolved review thread", () => {
+  const threads = parseReviewThreads({
+    data: {
+      repository: {
+        pullRequest: {
+          reviewThreads: {
+            nodes: [
+              {
+                id: "bot-thread",
+                isResolved: false,
+                comments: {
+                  nodes: [{
+                    body: "Check this path",
+                    createdAt: "now",
+                    path: "a.ts",
+                    line: 1,
+                    author: { login: "reviewer[bot]" },
+                  }],
+                },
+              },
+              {
+                id: "human-thread",
+                isResolved: false,
+                comments: {
+                  nodes: [{
+                    body: "Please explain",
+                    createdAt: "now",
+                    path: "a.ts",
+                    line: 2,
+                    author: { login: "person" },
+                  }],
+                },
+              },
+              {
+                id: "resolved-thread",
+                isResolved: true,
+                comments: { nodes: [] },
+              },
+            ],
+          },
+        },
+      },
+    },
+  });
+  const review = (id: number, login: string, type: string, state = "COMMENTED") => ({
+    id,
+    user: { login, type },
+    state,
+    submitted_at: "2026-09-23T00:00:00Z",
+  });
+  const submissions = parseReviewSubmissions([
+    [review(1, "reviewer[bot]", "Bot"), review(2, "reviewer[bot]", "Bot")],
+    [review(2, "reviewer[bot]", "Bot"), review(3, "reviewer[bot]", "Bot", "PENDING"), review(4, "person", "User")],
+  ]);
+  expect(withAutomatedReviewPasses(threads, submissions)).toMatchObject([
+    { id: "bot-thread", automatedReviewPasses: 2 },
+    { id: "human-thread", automatedReviewPasses: null },
+  ]);
 });
 
 describe("context and stack discovery", () => {

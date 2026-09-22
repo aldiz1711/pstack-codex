@@ -69,7 +69,7 @@ Tests alone are not sufficient verification. A PR is verified only when its unit
 
 ### Boot recipe, for every live lane
 
-Each live lane runs in an isolated Codex worktree at the PR head. Drive through `$control-ui` or `$control-cli`.
+Each live lane runs at the PR head with its own worktree and independent runtime: separate processes, ports, and test data. Use a separate cloud worker, VM, or container when available. A worktree alone does not isolate a running app. If independent runtimes are unavailable, run the ten lanes serially, starting and tearing down a fresh runtime for each; keep all ten verdicts and record the reduced concurrency. Drive through `$control-ui` or `$control-cli`.
 
 - [ ] `git fetch origin <head-branch> && git checkout <head SHA>`.
 - [ ] <Start the backend and the surface. Wait for ready.>

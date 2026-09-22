@@ -65,6 +65,14 @@ export interface ReviewComment {
 export interface ReviewThread {
   readonly id: string;
   readonly firstComment: ReviewComment | null;
+  readonly automatedReviewPasses: number | null;
+}
+export interface ReviewSubmission {
+  readonly id: number;
+  readonly authorLogin: string;
+  readonly authorType: string;
+  readonly state: string;
+  readonly submittedAt: string | null;
 }
 interface CheckDetails {
   readonly name: string;
@@ -388,6 +396,7 @@ export interface GitHubReader {
     after: string | null
   ): Promise<RollupPage>;
   reviewThreads(context: PrContext): Promise<readonly ReviewThread[]>;
+  reviewSubmissions(context: PrContext): Promise<readonly ReviewSubmission[]>;
   commitRollups(context: PrContext): Promise<readonly CommitRollup[]>;
 }
 export interface PollingOptions {
