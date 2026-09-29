@@ -23,7 +23,7 @@ If `~/.codex/pstack-models.md` exists, read its budget and role values. Otherwis
 
 **(b) Apply it.** Store the reasoning effort separately from the model name. `unlimited` leaves each role at its listed effort. `large`, `medium`, and `small` target `xhigh`, `high`, and `medium`. If a model does not support the target effort, use its highest supported effort at or below the target or mark the role as needing a choice. Do not change `inherit-parent` or `auto`.
 
-**(c) Show the roles and confirm.** Show every role with its model and effort, flagging unavailable choices. Offer the available models, supported efforts, `inherit-parent`, and `auto` as alternatives. Panel roles (arena runners, architect runners, interrogate reviewers) contain one entry per desired subagent. `arena cross-judge pool` contains candidates from which Arena selects one, preferring a different model at comparable capability when configured; otherwise it uses a separate run of the same model. The current Codex concurrency limit may require running a panel in waves.
+**(c) Show the roles and confirm.** Show every role with its model and effort, flagging unavailable choices. Offer the available models, supported efforts, `inherit-parent`, and `auto` as alternatives. Panel roles (arena runners, architect runners, interrogate reviewers) contain one entry per desired subagent, including repeated models. `arena cross-judge pool` contains choices from which Arena selects one. Independent reviews follow the [independent review policy](../poteto-mode/references/independent-review.md). They default to the parent model and effort, with model diversity optional. The current Codex concurrency limit may require running a panel in waves.
 
 ### 4. Validate
 
@@ -49,10 +49,10 @@ why synthesizer: gpt-6-astra | max
 reflect tooling: gpt-6-sol | max
 reflect judgment, divergent, synthesizer: gpt-6-astra | max
 arena runners: gpt-6-astra | max, gpt-6-astra | max, gpt-6-astra | max, gpt-6-astra | max
-arena cross-judge pool: gpt-6-astra | max
+arena cross-judge pool: inherit-parent
 swarm workers: gpt-6-luna | xhigh
 architect runners: gpt-6-astra | max, gpt-6-astra | max, gpt-6-astra | max, gpt-6-astra | max
-interrogate reviewers: gpt-6-astra | max, gpt-6-sol | max, gpt-6-luna | xhigh, gpt-6-sol | xhigh
+interrogate reviewers: inherit-parent
 ```
 
 Use only confirmed available combinations. If a default is unavailable, choose an equivalent the user can access or `inherit-parent` rather than writing a broken entry.

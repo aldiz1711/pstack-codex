@@ -5,7 +5,7 @@ description: "Use for \"interrogate\", \"adversarial review\", \"multi-model rev
 
 # Interrogate
 
-Spawn one reviewer per configured model to adversarially review code changes. Each model gets the same prompt and rubric. The adversarial signal comes from model diversity, not assigned personas.
+Review code changes through separate, read-only sessions under the [independent review policy](../poteto-mode/references/independent-review.md). Each reviewer gets the same prompt and rubric. Reviewers may use the same model. Model diversity is optional.
 
 The deliverable is a synthesized verdict. Do NOT auto-apply changes.
 
@@ -32,21 +32,15 @@ Write one clear paragraph. If you're unsure about the intent, ask the user befor
 
 ## Step 3, Spawn Reviewers
 
-Launch reviewers concurrently up to the available Codex agent limit, queuing the rest. Use the `interrogate reviewers` list from `~/.codex/pstack-models.md` when present, one reviewer per entry, extending or shrinking the Reviewer A/B/C/D labels below to the configured entry count. Otherwise use the table defaults.
-
-| Subagent | Default model |
-|----------|---------------|
-| Reviewer A | `gpt-6-astra` at max reasoning |
-| Reviewer B | `gpt-6-sol` at max reasoning |
-| Reviewer C | `gpt-6-luna` at xhigh reasoning |
-| Reviewer D | `gpt-6-sol` at xhigh reasoning |
+Use the `interrogate reviewers` list from `~/.codex/pstack-models.md` when present, one reviewer per entry, including repeated models. Without that line, start with one reviewer on the parent model and effort. Add reviewers when the scope or risk needs more coverage, respecting any count the user requests. Label sessions Reviewer A, B, and so on. Launch them up to the available Codex agent limit, queuing the rest.
 
 For each reviewer:
-- use Codex agent `pstack-readonly`, whose sandbox is read-only; do not replace it with a writable agent
-- configured model and reasoning effort from the `interrogate reviewers` entry, or the table default with no configured line
+- use Codex agent `pstack-readonly` in an effective read-only sandbox under the independent review policy
+- configured model and reasoning effort from the `interrogate reviewers` entry, or the parent model and effort with no configured line
+- set `fork_turns: "none"` and provide source context without the author's verdict or other reviewers' findings
 - pass the same review prompt and rubric
 
-If a model slug is rejected as unresolvable when you try to spawn the subagent, check the valid slugs in the Codex subagent tool's error message, pick the closest equivalent (prefer the highest-reasoning tier of the same family), spawn with the valid slug, and open a separate PR to update the configured value or default table. Do not block the review on the slug issue. If the configured value is `inherit-parent` or `auto`, omit `model` instead. Never treat those aliases as broken slugs or enter this fallback for them.
+If a configured model or effort is unavailable, report that reviewer as blocked. Use an alternative only when the user has authorized that fallback. Do not silently replace an explicit choice or raise its reasoning budget. If the configured value is `inherit-parent` or `auto`, omit both `model` and `reasoning_effort`. Never treat those aliases as broken slugs.
 
 Read `references/reviewer-prompt.md` and fill in the template with:
 1. The stated intent
@@ -61,10 +55,10 @@ The same filled template goes to all reviewers, so every model applies the code-
 As results come back, build a unified picture:
 
 1. **Parse all findings** from the reviewers
-2. **Identify consensus**. Findings raised by 2+ models independently are highest signal.
-3. **Identify lone-model findings**. Still worth reading, but weight accordingly.
-4. **Deduplicate**. Different models may describe the same issue differently. Merge these and note which models raised it.
-5. **Note disagreements**. If one model flags something and another explicitly says the opposite, that's useful context for the verdict.
+2. **Check evidence**. Verify each finding against the code, source, or reproduction before accepting it.
+3. **Identify agreement and disagreement**. Record which reviewer labels and models raised each finding. Agreement alone does not establish correctness, especially when reviewers share a model.
+4. **Keep supported single-reviewer findings**. A concrete bug does not need another vote.
+5. **Deduplicate**. Merge descriptions of the same issue while retaining the evidence and reviewer labels.
 
 ## Step 5, Lead Judgment
 
@@ -80,7 +74,7 @@ Categorize every finding using these buckets:
 - **Dismissed**. Wrong, nitpicky, or missing context. Brief explanation why.
 
 For each finding, include:
-- Which model(s) raised it
+- Which reviewer labels and models raised it
 - The category (act on / consider / noted / dismissed)
 - A one-line rationale for the categorization
 
@@ -92,13 +86,13 @@ Present the verdict in this structure:
 > [The stated intent paragraph from Step 2]
 
 ### Reviewers
-- Reviewer [label]: [model name], [N findings] (one bullet per reviewer)
+- Reviewer [label]: [model name], [reasoning effort], [N findings] (one bullet per reviewer)
 
 ### Act On
-[Findings that should be addressed. For each: description, which models raised it, why it matters.]
+[Findings that should be addressed. For each: description, reviewer labels and models, supporting evidence, why it matters.]
 
 ### Consider
-[Findings worth thinking about. For each: description, which models raised it, tradeoff involved.]
+[Findings worth thinking about. For each: description, reviewer labels and models, supporting evidence, tradeoff involved.]
 
 ### Noted
 [Valid but low-priority. Brief list.]
@@ -107,4 +101,4 @@ Present the verdict in this structure:
 [Rejected findings with brief rationale.]
 
 ### Agreement Map
-[Where did models agree, where did they diverge, and what does the pattern of agreement/disagreement tell us?]
+[Where did reviewers agree or disagree? Distinguish separate sessions from model diversity and state what the evidence supports.]

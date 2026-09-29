@@ -1,6 +1,6 @@
 {
   "name": "pstack-codex",
-  "version": "0.15.2+codex.20260924175840",
+  "version": "0.15.2+codex.20260929200633",
   "description": "if you want to go fast, go deep first. pstack helps you write less, but higher quality code. rigorous agent workflows you can parallelize with confidence. Adapted for Codex.",
   "author": {
     "name": "Lauren Tan"
@@ -28,7 +28,7 @@
     "defaultPrompt": "Use $poteto-mode for this task and follow the matching PStack playbook.",
     "capabilities": [
       "Engineering workflows",
-      "Multi-model review",
+      "Independent review",
       "Code verification"
     ]
   }
