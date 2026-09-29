@@ -18,7 +18,7 @@ Remaining triggers:
 - Any code → name the data shape first, and choose its organizing structure per **principle-model-the-domain**.
 - Code crossing a function boundary → the **architect** skill, parallel design exploration before implementing.
 - Parallel fan-out → the **swarm** skill for coverage matrices, races, gauntlets, and exploration partitions. Use **arena** for design or code bakeoffs with base selection and grafting.
-- Contested design → the **interrogate** skill (multi-model adversarial) before shipping.
+- Contested design → the **interrogate** skill for independent adversarial review before shipping.
 - Nontrivial multi-step → write the throughput checkpoint (Feature step 3).
 - Any prose surface → the **unslop** skill. Your reply is a prose surface. Write it per **Writing the reply**. Agent-facing prose also follows the **create-skill** skill (Codex's built-in `$skill-creator` for authoring SKILL.md files).
 - Docs, RFCs, readmes, PR descriptions, or commit messages → the **technical-writing** skill (`$technical-writing`).
@@ -85,13 +85,15 @@ Read the leaf skill in full for any principle you apply. Each entry names when i
 
 ## Subagents
 
-**Use Codex agent `poteto-agent` for any subagent you spawn inside a playbook step** when named agent roles are available. Otherwise, instruct the subagent to read `agents/poteto-agent.md` and this skill before work. `$poteto-mode` and `poteto-agent` use the same instructions. Routed workflow skills (`how`, `why`, `interrogate`, `reflect`, `swarm`) set their own agent role and model for diverse-model review. Respect what the skill prescribes, don't override to `poteto-agent`.
+**Use Codex agent `poteto-agent` for any subagent you spawn inside a playbook step** when named agent roles are available. Otherwise, instruct the subagent to read `agents/poteto-agent.md` and this skill before work. `$poteto-mode` and `poteto-agent` use the same instructions. Routed workflow skills (`how`, `why`, `interrogate`, `reflect`, `swarm`) set their own agent role and model. Independent reviewers and verifiers follow the [independent review policy](references/independent-review.md). Respect what the skill prescribes, don't override to `poteto-agent`.
 
-Read-only workflow roles (`how` explorers and explainers, `interrogate` reviewers, and the Arena judge) use Codex agent `pstack-readonly`. Its sandbox enforces the read-only boundary. If that agent is unavailable, do not substitute a writable subagent or count its result as an independent read-only verdict.
+Read-only workflow roles (`how` explorers and explainers, `interrogate` reviewers, and the Arena judge) use Codex agent `pstack-readonly` in an effective read-only sandbox. The role name alone does not prove that boundary. If it cannot be enforced, do not count the result as an independent read-only verdict.
 
 **Defaults for every Codex subagent call.** Always set `fork_turns: "none"`, including for routed workflow roles. Pass a concise task brief and file paths instead of inherited turns. Use asynchronous execution, permissions that retain needed MCP access, and an explicit model and reasoning effort per role (configurable via `$setup-pstack`. Defaults `gpt-6-luna` at xhigh reasoning for code, `gpt-6-astra` at max reasoning for prose and judgment). Code delegates tier by difficulty. The hardest changes (cross-cutting design, gnarly concurrency, subtle algorithms) go to your strongest judgment model (`gpt-6-astra` at max reasoning), whether the task needs judgment on vague intent or is a precisely specified sequence of steps to execute to the letter. Trivial mechanical edits go to your fast code model. Per-role lines in `~/.codex/pstack-models.md` override these defaults and the model choices in the routed skills (`how`, `why`, `arena`, `swarm`, `architect`, `interrogate`, `reflect`). A role with no line keeps its default, and a role line of `inherit-parent` or `auto` runs that role on the parent chat model (omit the Codex subagent `model` and `reasoning_effort` overrides).
 
-You own every subagent's work. Review the diff and write your own summary, don't pass through what it said. Interrupt-chained resumes silently drop directives, so fire a fresh subagent with consolidated scope rather than trusting a "done" summary. A second opinion is the same prompt against a different model. Agreement is high-signal.
+Independent reviewer fallbacks follow the independent review policy rather than the general prose and judgment defaults above.
+
+You own every subagent's work. Review the diff and write your own summary, don't pass through what it said. Interrupt-chained resumes silently drop directives, so fire a fresh subagent with consolidated scope rather than trusting a "done" summary. A second opinion uses a separate review session under the independent review policy. Check its evidence before accepting its verdict.
 
 ## Writing the reply
 

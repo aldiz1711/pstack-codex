@@ -37,13 +37,13 @@ If a candidate fails to produce output, proceed with N-1 and note the dropout in
 
 ## Phase C: Cross-judge
 
-After all Phase B candidates complete, choose one model from the `arena cross-judge pool` in `~/.codex/pstack-models.md` when present. Otherwise use `gpt-6-astra` at max reasoning. Prefer a different model at comparable capability when one is configured; otherwise use a separate `gpt-6-astra` run. Spawn one judge subagent using Codex agent `pstack-readonly` and its read-only sandbox. It sees the rubric and the candidates by path label, scores each criterion, and recommends a base with rationale. It runs in parallel with the parent's reading in Phase D, not with the candidates themselves. Don't spawn the judge while candidates are still writing.
+After all Phase B candidates complete, follow the [independent review policy](../poteto-mode/references/independent-review.md). Choose one configured model and effort from `arena cross-judge pool` in `~/.codex/pstack-models.md`, or use the parent model and effort when that line is absent. The judge may use the same model as the parent or runners. It sees the rubric and candidate artifacts by path label, records scores with evidence, then reads candidate rationales before recommending a base. Hold back the parent's pick until then. It runs in parallel with the parent's reading in Phase D, not with candidates still writing.
 
 ## Phase D: Pick a base
 
 Read every candidate end to end before picking.
 
-Score each candidate against the rubric criterion by criterion, not on holistic feel. Compare against the cross-judge. Agreement on the base confirms the pick. Disagreement means one of you is biased or the rubric was ambiguous. Read both rationales before deciding.
+Score each candidate against the rubric criterion by criterion, not on holistic feel. Compare against the cross-judge and check the evidence behind both verdicts. Agreement supports the pick but does not prove it. Read both rationales before resolving a disagreement.
 
 Pick the base on which candidate a future maintainer can extend most easily without breaking invariants. Prefer the cleaner boundary or smaller API when two feel tied, per the Laziness Protocol.
 
@@ -57,7 +57,7 @@ Fold each graft in by hand, per the **redesign-from-first-principles** principle
 
 Record what was grafted, from which candidate, and what was rejected and why.
 
-When N candidates converge on the same shape, that is a strong agreement signal. Note the convergence in the record and ship the consensus shape. No graft is needed. When N candidates wildly diverge, Phase A was under-specified. Reframe and re-run rather than averaging the divergence.
+When candidates converge on the same shape, record the agreement and verify the shared design before shipping. Same-model runs may share blind spots. No graft is needed when none improves the base. When candidates diverge, check the brief and rubric before deciding whether to reframe and rerun.
 
 ## Phase F: Verify
 

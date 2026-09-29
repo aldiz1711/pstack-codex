@@ -37,7 +37,7 @@ For each finding, provide:
    - `warning`: Design concern, maintainability risk, or correctness issue that isn't immediately broken but will cause pain
    - `nit`: Style, naming, minor improvement. Only include nits if they're genuinely useful, not to pad your review.
 2. **Finding**: What the problem is, in concrete terms. Reference specific lines/functions.
-3. **Evidence**: Why you believe this is a problem. Show your reasoning. Don't just assert.
+3. **Evidence**: Cite the source text, reachable execution path, reproduction, or verification output that supports the finding. Reasoning alone is not proof.
 4. **Suggestion** (optional): What you'd do instead, if you have a concrete alternative. Skip this if you don't have a clear fix.
 
 ## What Makes a Good Finding

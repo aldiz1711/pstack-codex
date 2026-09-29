@@ -28,7 +28,7 @@
     "defaultPrompt": "Use $poteto-mode for this task and follow the matching PStack playbook.",
     "capabilities": [
       "Engineering workflows",
-      "Multi-model review",
+      "Independent review",
       "Code verification"
     ]
   }
