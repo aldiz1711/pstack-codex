@@ -3,6 +3,9 @@ name: principle-sequence-verifiable-units
 description: "Apply to multi-step work (sweeps, migrations, runs of similar edits) and to how you stack commits and PRs. Break work into small units that each end in a verifiable state, check each before the next, and order delivery so the sequence proves itself to a reviewer."
 ---
 
+Before applying this workflow, read `poteto-mode/references/host-runtime.md`. Resolve `poteto-mode` from the catalog or explicitly as a sibling under this loaded PStack skill's verified package namespace or skill-directory parent. Do not guess a plugin ID. The reference defines resource resolution, host capabilities, and model configuration.
+
+
 # Sequence work into verifiable units
 
 Order work as a sequence of small units, each ending in a state you can check, and don't advance until the current one is green.

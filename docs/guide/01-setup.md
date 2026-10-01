@@ -1,8 +1,10 @@
 # Set up pstack
 
-In this page you install the plugin, pick which models pstack uses, and run your first task. Setup is one command plus a short conversation.
+In this page you install the plugin, pick which models pstack uses, and run your first task. Local installation stays the same. A cloud host resolves skill resources and model configuration explicitly.
 
 ## Install the plugin
+
+The commands below install this repository's default branch. To evaluate a draft candidate, check out its branch or exact commit. Build a standalone ChatGPT account archive with `python3 scripts/package-plugin.py --output ../pstack-codex-account.zip`, then use the supported private Plugin Creator import route. The source retains local marketplace registration; the standalone account ZIP deliberately omits it. See the [packaging instructions](../../README.md#package-this-source-for-chatgpt). A draft source version is not a published release.
 
 Add this repository as a Codex plugin marketplace and install PStack:
 
@@ -25,7 +27,7 @@ Run:
 $setup-pstack
 ```
 
-[`$setup-pstack`](../../skills/setup-pstack/SKILL.md) detects the models and reasoning efforts you have access to, asks for a budget, shows you each role (code delegates, judgment, the review panels), and asks what you want. The default budget is unlimited. Answer the questions. It writes `~/.codex/pstack-models.md`, the role map pstack skills read. The bundled hook loads that file for new Codex tasks and subagents after you trust the hook in Codex.
+[`$setup-pstack`](../../skills/setup-pstack/SKILL.md) detects the models and reasoning efforts you have access to, asks for a budget, shows you each role (code delegates, judgment, the review panels), and asks what you want. The default budget is unlimited. Answer the questions. It preserves `~/.codex/pstack-models.md` on actual local Codex, or chooses a verified cloud user store with a known reload path. Without durable storage, it states that the map is session-scoped. All entrypoints explicitly load configuration. The trusted local hook is optional.
 
 You only override what you care about. A role with no line in the rule keeps the skill's default. To restore a default later, delete that role's line, or just run `$setup-pstack` again.
 
@@ -37,7 +39,7 @@ At the end of setup, `$setup-pstack` looks for a way to prove app behavior in yo
 
 Say yes and it writes `.agents/skills/verify-<app>/`, a project-local skill that teaches agents to drive your app the way a user does. It proves the skill works once before handing it over. Say no and setup moves on. You can run `$skill-creator` yourself any time. [Verify and ship](./06-verify-and-ship.md#create-a-project-verification-skill) covers when it earns its place.
 
-After setup, review and trust the PStack hook if Codex marks it as pending (`/hooks` in the CLI), then start a new task. The hook supplies the role map when the task or a subagent starts.
+A compatible local hook may supply the same map after review/trust. Cloud operation does not depend on it. Readback and a supported new-task lookup route are required before relying on persistent configuration.
 
 ## Run your first task
 

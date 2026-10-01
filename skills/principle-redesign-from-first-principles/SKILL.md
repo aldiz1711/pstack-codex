@@ -3,6 +3,9 @@ name: principle-redesign-from-first-principles
 description: "Apply when integrating a new requirement into an existing design. Redesign as if the requirement had been a foundational assumption from day one, instead of bolting it on."
 ---
 
+Before applying this workflow, read `poteto-mode/references/host-runtime.md`. Resolve `poteto-mode` from the catalog or explicitly as a sibling under this loaded PStack skill's verified package namespace or skill-directory parent. Do not guess a plugin ID. The reference defines resource resolution, host capabilities, and model configuration.
+
+
 # Redesign From First Principles
 
 When integrating a change, don't bolt it onto the existing design. Redesign as if the requirement had been there from the start.

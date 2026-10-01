@@ -165,24 +165,38 @@ const ciBlocker = (row: T.PrSnapshot): T.MergeBlocker | null =>
   (row.ci.kind === "ci-failing" || row.ci.kind === "ci-github-rejected")
     ? { kind: "failing-checks", pr: row.context, ci: row.ci }
     : null;
-function gateReason(
+export function mergeGateReason(
   row: T.PrSnapshot,
-  allowDraft: boolean
+  allowDraft = false
 ): T.MergeGateReason | null {
   if (row.kind === "merged") return null;
   if (row.kind === "closed") return "closed-without-merge";
   if (row.facts.isDraft && !allowDraft) return "draft-pr";
-  return row.facts.reviewDecision === "CHANGES_REQUESTED"
-    ? "changes-requested"
+  if (row.facts.reviewDecision === "CHANGES_REQUESTED")
+    return "changes-requested";
+  if (row.facts.mergeStateStatus === "BEHIND") return "stale-base";
+  if (
+    row.facts.mergeable === "UNKNOWN" ||
+    row.facts.mergeStateStatus === "UNKNOWN"
+  )
+    return "mergeability-unknown";
+  if (
+    row.facts.reviewDecision === "REVIEW_REQUIRED" ||
+    row.ci.all.some((check) => check.kind === "code-review-gate")
+  )
+    return "approval-required";
+  return row.facts.mergeStateStatus === "BLOCKED" ||
+    (row.facts.mergeStateStatus === "DRAFT" && !allowDraft)
+    ? "merge-blocked"
     : null;
 }
 function gateBlocker(
   row: T.PrSnapshot,
   allowDraft: boolean
 ): T.MergeBlocker | null {
-  const reason = gateReason(row, allowDraft);
+  const reason = mergeGateReason(row, allowDraft);
   return reason === null ||
-    (reason === "draft-pr" &&
+    ((reason === "draft-pr" || reason === "approval-required") &&
       row.kind === "open" &&
       row.ci.kind === "ci-pending")
     ? null
@@ -203,11 +217,15 @@ function readyContribution(
     row.ci.kind !== "ci-clean" ||
     row.threads.length !== 0 ||
     conflictBlocker(row) !== null ||
-    gateReason(row, allowDraft) !== null
+    mergeGateReason(row, allowDraft) !== null
   )
     return null;
   const reviewDecision = row.facts.reviewDecision;
-  if (reviewDecision === "CHANGES_REQUESTED") return null;
+  if (
+    reviewDecision === "CHANGES_REQUESTED" ||
+    reviewDecision === "REVIEW_REQUIRED"
+  )
+    return null;
   return {
     kind: "ready-pr",
     context: row.context,

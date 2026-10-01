@@ -3,6 +3,9 @@ name: principle-subtract-before-you-add
 description: "Apply when sequencing an addition, refactor, or rewrite. Remove dead code, redundant validators, and stub references first, then build on the simpler base."
 ---
 
+Before applying this workflow, read `poteto-mode/references/host-runtime.md`. Resolve `poteto-mode` from the catalog or explicitly as a sibling under this loaded PStack skill's verified package namespace or skill-directory parent. Do not guess a plugin ID. The reference defines resource resolution, host capabilities, and model configuration.
+
+
 # Subtract Before You Add
 
 When evolving a system, remove complexity first, then build.

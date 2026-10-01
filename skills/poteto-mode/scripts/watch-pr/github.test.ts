@@ -1,6 +1,10 @@
 import { describe, expect, it } from "bun:test";
+import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import {
   ChecksUnavailable,
+  GhGitHubReader,
   WatcherQueryError,
   mapRollupNode,
   orderStack,
@@ -18,6 +22,7 @@ import {
   pendingCheck,
 } from "./fakes.test-helper.ts";
 import { parsePrNumber } from "./types.ts";
+import { classifyPr, readSnapshot } from "./policy.ts";
 
 const context = {
   owner: "owner",
@@ -252,6 +257,84 @@ it("counts distinct submitted bot reviews for each unresolved review thread", ()
     { id: "bot-thread", automatedReviewPasses: 2 },
     { id: "human-thread", automatedReviewPasses: null },
   ]);
+});
+
+async function withReviewThreadPages(
+  pages: readonly unknown[],
+  check: (reader: GhGitHubReader) => Promise<void>
+): Promise<void> {
+  const directory = await mkdtemp(join(tmpdir(), "watch-pr-threads-"));
+  const previousPath = process.env.PATH;
+  try {
+    await writeFile(join(directory, "gh"), `#!/usr/bin/env node
+const pages = ${JSON.stringify(pages)};
+const cursor = process.argv.find((arg) => arg.startsWith("after="));
+console.log(JSON.stringify(pages[cursor === "after=next" ? 1 : 0]));
+`, { mode: 0o700 });
+    process.env.PATH = `${directory}:${previousPath ?? ""}`;
+    await check(new GhGitHubReader());
+  } finally {
+    if (previousPath === undefined) delete process.env.PATH;
+    else process.env.PATH = previousPath;
+    await rm(directory, { recursive: true, force: true });
+  }
+}
+
+const threadPage = (nodes: readonly unknown[], hasNextPage: boolean, endCursor: string | null) => ({
+  data: { repository: { pullRequest: { reviewThreads: {
+    nodes,
+    pageInfo: { hasNextPage, endCursor },
+  } } } },
+});
+
+describe("review thread pagination", () => {
+  it("blocks readiness for an unresolved thread beyond the first 100", async () => {
+    const first = Array.from({ length: 100 }, (_, index) => ({
+      id: `resolved-${index}`,
+      isResolved: true,
+      comments: { nodes: [] },
+    }));
+    const second = [{ id: "later-unresolved", isResolved: false, comments: { nodes: [] } }];
+    await withReviewThreadPages([
+      threadPage(first, true, "next"),
+      threadPage(second, false, null),
+    ], async (github) => {
+      const threads = await github.reviewThreads(context);
+      expect(threads).toEqual([{
+        id: "later-unresolved",
+        firstComment: null,
+        automatedReviewPasses: null,
+      }]);
+      const snapshot = await readSnapshot({
+        reader: {
+          ...fakeReader(),
+          reviewThreads: (pr) => github.reviewThreads(pr),
+        },
+        context,
+        pendingHistory: "include",
+        allowDraft: false,
+      });
+      expect(classifyPr(snapshot)).toMatchObject({
+        kind: "blocker",
+        blocker: { kind: "review-threads", threads: [{ id: "later-unresolved" }] },
+      });
+    });
+  });
+
+  it("fails closed when GitHub announces another page without a cursor", async () => {
+    await withReviewThreadPages([threadPage([], true, null)], async (reader) => {
+      await expect(reader.reviewThreads(context)).rejects.toBeInstanceOf(WatcherQueryError);
+    });
+  });
+
+  it("fails closed when GitHub repeats a page cursor", async () => {
+    await withReviewThreadPages([
+      threadPage([], true, "next"),
+      threadPage([], true, "next"),
+    ], async (reader) => {
+      await expect(reader.reviewThreads(context)).rejects.toBeInstanceOf(WatcherQueryError);
+    });
+  });
 });
 
 describe("context and stack discovery", () => {

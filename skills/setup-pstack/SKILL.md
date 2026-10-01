@@ -3,9 +3,12 @@ name: setup-pstack
 description: Configure which Codex models pstack uses per role and at what reasoning budget. Detects available models and writes a PStack role map for its skills. Use for $setup-pstack, "configure pstack models", "pstack budget", or changing pstack's model choices.
 ---
 
+Before applying this workflow, read `poteto-mode/references/host-runtime.md`. Resolve `poteto-mode` from the catalog or explicitly as a sibling under this loaded PStack skill's verified package namespace or skill-directory parent. Do not guess a plugin ID. The reference defines resource resolution, host capabilities, and model configuration.
+
+
 # Setup pstack
 
-Write `~/.codex/pstack-models.md`, the role map that pstack skills read before choosing a Codex subagent model and reasoning effort. The bundled `SessionStart` and `SubagentStart` hooks also load it into new Codex tasks and subagents. If `CODEX_HOME` is set, use that directory instead of `~/.codex` throughout this skill. Codex has no Cursor `.mdc` rule or model slug with effort encoded at the end.
+Write a user role map that PStack explicitly reads before model selection. On actual local Codex, preserve `${CODEX_HOME:-~/.codex}/pstack-models.md`. A trusted local `SessionStart` or `SubagentStart` hook is optional. On cloud hosts, use a verified user-selected configuration location or clearly state that the map is session-scoped. Installed skill resources are not a writable user store. Never claim persistence without a verified reload route. Model and reasoning effort remain separate values.
 
 ## Steps
 
@@ -15,11 +18,11 @@ Enumerate the model names and reasoning efforts accepted by the current Codex su
 
 ### 2. Load current state
 
-If `~/.codex/pstack-models.md` exists, read its budget and role values. Otherwise start from the `unlimited (max)` budget and role defaults in step 5. Keep any role that the user previously changed when rerunning setup.
+Read the supplied map or actual local map if accessible. Otherwise use `poteto-mode/references/model-config.md`, whose defaults preserve the original `unlimited (max)` budget. Keep previously chosen roles unless the current request changes them. Offer `references/profiles/sol-astra-xhigh.md` only when the user asks for that profile or a balanced Sol/Astra budget; it is not the public default.
 
 ### 3. Budget, map, and confirm
 
-**(a) Ask for a budget.** Offer the four original options: `unlimited — keep max`, `large — xhigh reasoning`, `medium — high reasoning`, and `small — medium reasoning`. The default is `unlimited — keep max` when the user does not choose another budget. Name the current budget when one is recorded.
+**(a) Ask for a budget when not already supplied.** Offer the four original options: `unlimited — keep max`, `large — xhigh reasoning`, `medium — high reasoning`, and `small — medium reasoning`. The default is `unlimited — keep max` when the user does not choose another budget. Name the current budget when one is recorded.
 
 **(b) Apply it.** Store the reasoning effort separately from the model name. `unlimited` leaves each role at its listed effort. `large`, `medium`, and `small` target `xhigh`, `high`, and `medium`. If a model does not support the target effort, use its highest supported effort at or below the target or mark the role as needing a choice. Do not change `inherit-parent` or `auto`.
 
@@ -31,35 +34,15 @@ Every named model and effort must be supported by the current Codex client. `inh
 
 ### 5. Write the role map
 
-Overwrite `~/.codex/pstack-models.md` so reruns stay idempotent. This is PStack's role map, loaded by the bundled hooks and read by its skills; Codex's actual subagent calls receive separate `model` and reasoning-effort values. A role with no line keeps its skill default. Format:
+Write the chosen user configuration target idempotently, preserving unrelated state. On local Codex, retain the original home-directory route. On cloud, confirm the storage and new-task lookup route, or use a labeled session map. PStack's actual subagent calls receive separate `model` and reasoning-effort values. Missing user lines use the public bundled defaults; reviewer defaults remain `inherit-parent`. Format:
 
-```text
-# pstack model configuration. Delete a line to use the skill default.
-# budget: unlimited (max)
-feature, refactoring: gpt-6-luna | xhigh
-bug-fix: gpt-6-luna | xhigh
-perf-issue: gpt-6-luna | xhigh
-hillclimb: gpt-6-luna | xhigh
-judgment and prose: gpt-6-astra | max
-hardest tasks: gpt-6-astra | max
-how explorer: gpt-6-luna | xhigh
-how explainer: gpt-6-astra | max
-why investigators: gpt-6-luna | xhigh
-why synthesizer: gpt-6-astra | max
-reflect tooling: gpt-6-sol | max
-reflect judgment, divergent, synthesizer: gpt-6-astra | max
-arena runners: gpt-6-astra | max, gpt-6-astra | max, gpt-6-astra | max, gpt-6-astra | max
-arena cross-judge pool: inherit-parent
-swarm workers: gpt-6-luna | xhigh
-architect runners: gpt-6-astra | max, gpt-6-astra | max, gpt-6-astra | max, gpt-6-astra | max
-interrogate reviewers: inherit-parent
-```
+Use the role names and text format in `poteto-mode/references/model-config.md`. Copy that map as the default rather than maintaining a second default table here.
 
 Use only confirmed available combinations. If a default is unavailable, choose an equivalent the user can access or `inherit-parent` rather than writing a broken entry.
 
 ### 6. Confirm
 
-Tell the user the role map was written. The bundled hook loads it when a Codex task starts, resumes, or compacts, and when a subagent starts. Codex requires the user to review and trust a new or changed plugin hook before it runs; direct them to Codex's hook review (`/hooks` in the CLI) if this hook is pending. Do not claim automatic loading until the hook is trusted. Re-running this skill updates the model map without changing the hook definition.
+Read back and validate the exact map, then report the verified storage or session scope. Every PStack entrypoint loads it explicitly before delegation and after resume. A supported trusted local hook can supply the same map; cloud loading does not depend on hooks. Do not claim the parent picker or host-wide model settings changed. Re-running setup updates only the chosen user map.
 
 ### 7. Offer a verification skill (optional)
 

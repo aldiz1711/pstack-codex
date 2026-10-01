@@ -1,6 +1,6 @@
 # Independent review
 
-For artifact and decision-trail reviews, use a separate, read-only subagent session with `fork_turns: "none"`. Self-review does not replace this pass. Use Codex agent `pstack-readonly` when available. Confirm that the launcher's effective sandbox is read-only. The role name alone does not establish that boundary. If the launcher inherits writable access, use a separate read-only run or report the required review as blocked.
+For artifact and decision-trail reviews, use a separate, read-only subagent session with `fork_turns: "none"`. Self-review does not replace this pass. Use Codex agent `pstack-readonly` when available. Confirm that the launcher's effective sandbox is read-only. The role name alone does not establish that boundary. If the launcher inherits writable access, use a separate read-only run or report the required review as blocked. A separately instructed reviewer may provide advisory findings, but instructions alone are not enforcement and cannot satisfy this gate.
 
 Runtime verifiers use separate sessions with `fork_turns: "none"` and the same model-selection and evidence rules below. Give them only the task-authorized permissions needed to exercise the real app, with isolated outputs. They do not edit the implementation under review. They return verdicts and evidence to the parent, which records ledger rows and publishes authorized PR verdicts.
 

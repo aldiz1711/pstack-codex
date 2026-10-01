@@ -3,6 +3,9 @@ name: poteto-mode
 description: poteto's agent style for concise, detailed responses, deliberate subagents, unslopped prose, simple code, and verified work. Use for poteto, $poteto-mode, or requests to work in this style.
 ---
 
+Before routing work, read `references/host-runtime.md` and `references/model-config.md` through this skill's package or verified skill directory.
+
+
 # Poteto mode
 
 New task? Playbook match or rigor needed -> apply `$poteto-mode`. Casual turn or user opts out -> don't.
@@ -75,7 +78,7 @@ Read the leaf skill in full for any principle you apply. Each entry names when i
 
 ## Autonomy
 
-**Just do it.** Use any MCP tool. Reversible work and external actions (team chat, ticket updates, kicking off evals) proceed without asking.
+**Just do it within authorized scope.** Use available tools. Reversible engineering work proceeds when the request authorizes it. The host's confirmation and privacy rules govern external actions, sharing, and permissions; this skill grants no new authority.
 
 **Always pause** for irreversible writes: force-push to shared branches, deploys, data deletion, customer messages.
 
@@ -85,11 +88,11 @@ Read the leaf skill in full for any principle you apply. Each entry names when i
 
 ## Subagents
 
-**Use Codex agent `poteto-agent` for any subagent you spawn inside a playbook step** when named agent roles are available. Otherwise, instruct the subagent to read `agents/poteto-agent.md` and this skill before work. `$poteto-mode` and `poteto-agent` use the same instructions. Routed workflow skills (`how`, `why`, `interrogate`, `reflect`, `swarm`) set their own agent role and model. Independent reviewers and verifiers follow the [independent review policy](references/independent-review.md). Respect what the skill prescribes, don't override to `poteto-agent`.
+**Use Codex agent `poteto-agent` for any subagent you spawn inside a playbook step** when named agent roles are available. Otherwise, instruct the subagent to read `references/poteto-agent.md` and this skill before work. `$poteto-mode` and `poteto-agent` use the same instructions. Routed workflow skills (`how`, `why`, `interrogate`, `reflect`, `swarm`) set their own agent role and model. Independent reviewers and verifiers follow the [independent review policy](references/independent-review.md). Respect what the skill prescribes, don't override to `poteto-agent`.
 
 Read-only workflow roles (`how` explorers and explainers, `interrogate` reviewers, and the Arena judge) use Codex agent `pstack-readonly` in an effective read-only sandbox. The role name alone does not prove that boundary. If it cannot be enforced, do not count the result as an independent read-only verdict.
 
-**Defaults for every Codex subagent call.** Always set `fork_turns: "none"`, including for routed workflow roles. Pass a concise task brief and file paths instead of inherited turns. Use asynchronous execution, permissions that retain needed MCP access, and an explicit model and reasoning effort per role (configurable via `$setup-pstack`. Defaults `gpt-6-luna` at xhigh reasoning for code, `gpt-6-astra` at max reasoning for prose and judgment). Code delegates tier by difficulty. The hardest changes (cross-cutting design, gnarly concurrency, subtle algorithms) go to your strongest judgment model (`gpt-6-astra` at max reasoning), whether the task needs judgment on vague intent or is a precisely specified sequence of steps to execute to the letter. Trivial mechanical edits go to your fast code model. Per-role lines in `~/.codex/pstack-models.md` override these defaults and the model choices in the routed skills (`how`, `why`, `arena`, `swarm`, `architect`, `interrogate`, `reflect`). A role with no line keeps its default, and a role line of `inherit-parent` or `auto` runs that role on the parent chat model (omit the Codex subagent `model` and `reasoning_effort` overrides).
+**Defaults for every supported subagent call.** Use `fork_turns: "none"` when the launcher exposes it. Pass a concise self-contained task brief and verified skill/resource locators. Launch asynchronously when supported. Read the host runtime and resolve configuration before model selection. Pass model and reasoning effort separately only when supported. The bundled role map preserves the original defaults and routed-skill fallbacks. The hardest code changes use the configured `hardest tasks` role, as before. Explicit user role choices override defaults; `inherit-parent` and `auto` omit both overrides. Confirm availability rather than silently replacing an explicit choice.
 
 Independent reviewer fallbacks follow the independent review policy rather than the general prose and judgment defaults above.
 

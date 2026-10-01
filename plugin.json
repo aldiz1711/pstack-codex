@@ -1,0 +1,39 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "pstack-codex",
+  "version": "0.15.3-dev.1",
+  "description": "Unofficial PStack engineering skills and playbooks adapted for local Codex and cloud agents.",
+  "author": {
+    "name": "Zidane Adhitya"
+  },
+  "homepage": "https://github.com/aldiz1711/pstack-codex",
+  "repository": "https://github.com/aldiz1711/pstack-codex",
+  "license": "MIT",
+  "keywords": [
+    "pstack",
+    "poteto-mode",
+    "workflow",
+    "principles",
+    "agent-style",
+    "subagents",
+    "unslop"
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "PStack for Codex",
+        "shortDescription": "PStack engineering workflows",
+        "developerName": "Zidane Adhitya",
+        "category": "Productivity",
+        "logo": "./assets/logo.png",
+        "longDescription": "Unofficial adaptation of Lauren Tan's PStack. Preserves the full engineering skills and playbooks with host-aware configuration and resource resolution for local Codex and cloud agents.",
+        "defaultPrompt": "Use $poteto-mode for this task and follow the matching PStack playbook.",
+        "capabilities": [
+          "Engineering workflows",
+          "Independent review",
+          "Code verification"
+        ]
+      }
+    }
+  }
+}
