@@ -51,18 +51,17 @@ class PackagingTests(unittest.TestCase):
                     self.assertEqual(a.read(name), s.read(name))
 
     def test_manual_only_sibling_resolution_with_sparse_catalog(self):
-        index = json.loads((ROOT / "skills/poteto-mode/references/skill-index.json").read_text())["skills"]
         namespace = "skill://verified-pstack"
         catalog = {"poteto-mode": namespace + "/poteto-mode"}
         def read(package, resource="SKILL.md"):
             name = package.removeprefix(namespace + "/")
-            self.assertIn(name, index)
+            self.assertTrue((ROOT / "skills" / name / "SKILL.md").is_file())
             relative = Path(resource)
-            file = (ROOT / "skills" / index[name] / relative).resolve()
-            self.assertTrue(file.is_relative_to(ROOT / "skills" / index[name]))
+            file = (ROOT / "skills" / name / relative).resolve()
+            self.assertTrue(file.is_relative_to(ROOT / "skills" / name))
             return file.read_text()
         prefix = catalog["poteto-mode"].rsplit("/", 1)[0]
-        how = prefix + "/" + index["how"]
+        how = prefix + "/how"
         self.assertNotIn("how", catalog)
         self.assertIn("# How", read(how))
         self.assertIn("explore", read(how, "references/explorer-prompt.md").lower())
@@ -84,7 +83,23 @@ class PackagingTests(unittest.TestCase):
             with zipfile.ZipFile(output) as archive:
                 for name in extras:
                     self.assertNotIn("pstack-codex/" + name, archive.namelist())
-                self.assertIn("pstack-codex/skills/setup-pstack/references/model-config.md", archive.namelist())
+                self.assertIn("pstack-codex/skills/setup-pstack/SKILL.md", archive.namelist())
+
+    def test_archive_rejects_required_prompt_missing_from_export(self):
+        for remove_from_disk in [False, True]:
+            with self.subTest(remove_from_disk=remove_from_disk), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory) / "source"
+                shutil.copytree(ROOT, root, ignore=shutil.ignore_patterns(".git", "__pycache__"))
+                subprocess.run(["git", "init", "--quiet"], cwd=root, check=True)
+                subprocess.run(["git", "add", "."], cwd=root, check=True)
+                prompt = "skills/no-comments/references/comment-sicko.md"
+                subprocess.run(["git", "rm", "--cached", "--quiet", prompt], cwd=root, check=True)
+                if remove_from_disk:
+                    (root / prompt).unlink()
+                output = Path(directory) / "account.zip"
+                with self.assertRaisesRegex(ValueError, "required package resources.*comment-sicko"):
+                    PACKAGER.package(root, output)
+                self.assertFalse(output.exists())
 
     def test_symlink_and_output_inside_source_are_rejected(self):
         with self.assertRaisesRegex(ValueError, "outside"):

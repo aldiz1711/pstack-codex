@@ -3,8 +3,6 @@ name: arena
 description: "Spawn N parallel candidates at the same task, pick a base, graft the strongest parts of the losers into it. Use for $arena, 'arena this', 'throw it in the arena', or when one attempt at a non-trivial artifact would lock in the wrong shape."
 ---
 
-Before selecting models or delegating, reuse the caller's resolved PStack role map. If none was passed, read `setup-pstack/references/model-config.md` and `poteto-mode/references/host-runtime.md` through this skill's verified PStack namespace or skill-directory parent.
-
 # Arena
 
 Fan out N parallel attempts at the same task. Read every candidate end to end. Pick the strongest as the base. Graft the best ideas from the others into it. Verify the synthesized result.
@@ -26,7 +24,7 @@ The N candidates will receive the same prompt, so the prompt is the contract.
 
 1. State the artifact each candidate is producing.
 2. Derive the rubric. State what success looks like for *this* task, then turn it into 3-6 concrete gradeable criteria. The rubric is the picker's tool in Phase D. Candidates only see the task.
-3. Pick the runners. Use `arena runners` from the resolved PStack role map when configured. The bundled map has four independent runners with the same model capability. Spawn more when the arena covers multiple design directions. Each runner receives the same task in its own context.
+3. Pick the runners. Use `arena runners` from `~/.codex/pstack-models.md` when present. Otherwise default to four independent `gpt-6-astra` runners at max reasoning, so candidates have the same model capability. Spawn more when the arena covers multiple design directions. Each runner receives the same task in its own context.
 4. Assign output paths. Each candidate writes to its own location (a git worktree where possible, otherwise `/tmp/arena-<slug>/candidate-<n>/`), per the **separate-before-serializing-shared-state** principle skill.
 
 ## Phase B: Fan out
@@ -39,7 +37,7 @@ If a candidate fails to produce output, proceed with N-1 and note the dropout in
 
 ## Phase C: Cross-judge
 
-After all Phase B candidates complete, follow the [independent review policy](../poteto-mode/references/independent-review.md). Choose one configured model and effort from `arena cross-judge pool` in the resolved PStack role map, or use the parent model and effort when that line is absent. The judge may use the same model as the parent or runners. It sees the rubric and candidate artifacts by path label, records scores with evidence, then reads candidate rationales before recommending a base. Hold back the parent's pick until then. It runs in parallel with the parent's reading in Phase D, not with candidates still writing.
+After all Phase B candidates complete, follow the [independent review policy](../poteto-mode/references/independent-review.md). Choose one configured model and effort from `arena cross-judge pool` in `~/.codex/pstack-models.md`, or use the parent model and effort when that line is absent. The judge may use the same model as the parent or runners. It sees the rubric and candidate artifacts by path label, records scores with evidence, then reads candidate rationales before recommending a base. Hold back the parent's pick until then. It runs in parallel with the parent's reading in Phase D, not with candidates still writing.
 
 ## Phase D: Pick a base
 

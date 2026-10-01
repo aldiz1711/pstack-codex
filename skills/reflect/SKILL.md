@@ -3,8 +3,6 @@ name: reflect
 description: Spawn three parallel review subagents over the active transcript, surface learnings, and route each to a concrete edit on an existing skill. Use when the user says reflect.
 ---
 
-Before selecting models or delegating, reuse the caller's resolved PStack role map. If none was passed, read `setup-pstack/references/model-config.md` and `poteto-mode/references/host-runtime.md` through this skill's verified PStack namespace or skill-directory parent.
-
 # Reflect
 
 Mine the current conversation for durable learnings, then route them into skill edits.
@@ -25,15 +23,15 @@ Launch three Codex subagents concurrently when the available concurrency permits
 
 | Lens | `model` | Prompt template |
 |---|---|---|
-| Judgment | your configured reflect-judgment model | `references/judgment-reviewer.md` |
-| Tooling | your configured reflect-tooling model | `references/tooling-reviewer.md` |
-| Divergent | your configured reflect-judgment model | `references/divergent-reviewer.md` |
+| Judgment | your configured reflect-judgment model (default `gpt-6-astra` at max reasoning) | `references/judgment-reviewer.md` |
+| Tooling | your configured reflect-tooling model (default `gpt-6-sol` at max reasoning) | `references/tooling-reviewer.md` |
+| Divergent | your configured reflect-judgment model (default `gpt-6-astra` at max reasoning) | `references/divergent-reviewer.md` |
 
 Pass each template verbatim, substituting the task history or digest where marked. Reviewers return findings in the Codex subagent response body.
 
 ### 3. Synthesize
 
-Launch one Codex subagent using your configured reflect-judgment model. The synthesizer may use available MCP tools to spot-verify citations. Instruct it not to write. Use `references/synthesizer.md` verbatim, with each reviewer's full output inlined where marked. The synthesizer returns a structured Accepted / Rejected / Backlog list.
+Launch one Codex subagent using your configured reflect-judgment model (default `gpt-6-astra` at max reasoning). The synthesizer may use available MCP tools to spot-verify citations. Instruct it not to write. Use `references/synthesizer.md` verbatim, with each reviewer's full output inlined where marked. The synthesizer returns a structured Accepted / Rejected / Backlog list.
 
 ### 4. Structural enforcement check
 

@@ -24,7 +24,7 @@ jobs:
           python3 scripts/package-plugin.py
           python3 -m unittest discover -s tests -v
           python3 scripts/package-plugin.py --output "$RUNNER_TEMP/pstack-codex-account.zip"
-      - name: Test original Bun helpers and watcher regressions
+      - name: Test unchanged working-fork Bun helpers
         working-directory: skills/poteto-mode/scripts
         run: |
           bun install --frozen-lockfile

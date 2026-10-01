@@ -3,8 +3,6 @@ name: why
 description: "Use for 'why does X work this way', 'why we picked Y', design rationale, regressions, postmortems, or data-backed thresholds. Discovers available MCPs and queries each evidence category (source control, issue tracker, long-form docs, real-time chat, infrastructure observability, error tracking, product analytics warehouse) in parallel, then returns a cited read on decisions and tradeoffs. Use how for runtime behavior."
 ---
 
-Before selecting models or delegating, reuse the caller's resolved PStack role map. If none was passed, read `setup-pstack/references/model-config.md` and `poteto-mode/references/host-runtime.md` through this skill's verified PStack namespace or skill-directory parent.
-
 # Why
 
 Investigate the motivation and intent behind code.
@@ -72,14 +70,14 @@ Map each available MCP to one evidence category:
 6. Error / exception tracking
 7. Product analytics warehouse
 
-Use actual git/`gh` access or an authorized repository connector for source control. If neither exists, record a source-control gap. For the other six, classify using the MCP name, server instructions, tool names, and resource descriptors. If an MCP could fit more than one category, choose the one matching its primary evidence. Record ambiguous cases in the coverage map.
+Source control is always available through git and `gh`. For the other six, classify using the MCP name, server instructions, tool names, and resource descriptors. If an MCP could fit more than one category, choose the one matching its primary evidence. Record ambiguous cases in the coverage map.
 
 Aim for a complete **coverage map**, not a minimal one. Document the null, don't skip the search.
 
 Launch matching investigators concurrently up to Codex's available agent limit. Queue the rest. Don't ask one agent to cover multiple MCPs.
 
 Subagent config (each):
-- configured why-investigators model and reasoning effort
+- configured why-investigators model and reasoning effort (default `gpt-6-luna` at xhigh reasoning)
 - instruction to read and report without writing; use any available MCP tool needed for the assigned category
 
 Each investigator gets:
@@ -95,7 +93,7 @@ Spawn one investigator per category that has a matching MCP. Each owns exactly o
 
 Each entry names the category and the kind of "why" it uniquely surfaces. Use it to know what to expect back, how to name a gap when a category returns empty, and (only in the rare provably-irrelevant case) to justify a skip.
 
-1. **Source control investigator**. Git history, `gh` for PRs, code comments, tests. Always seek this category. Spawn when its source is available; otherwise record the gap. Best at surfacing *implementation-time rationale captured during review*.
+1. **Source control investigator**. Git history, `gh` for PRs, code comments, tests. Always spawn. The only guaranteed source. Best at surfacing *implementation-time rationale captured during review*.
 
 2. **Issue / ticket tracker investigator** (e.g. Linear, Jira, GitHub Issues, Plane, Shortcut MCP). Best at surfacing *the product or business forcing function*. Strongest when the why is external to engineering.
 
@@ -122,7 +120,7 @@ If your scope assessment suggests a single-commit trivial target where the PR de
 
 Spawn one synthesizer subagent:
 
-- configured why-synthesizer model and reasoning effort
+- configured why-synthesizer model and reasoning effort (default `gpt-6-astra` at max reasoning)
 - instruction to read and report without writing; use available MCP tools to spot-verify citations
 
 The synthesizer gets:

@@ -2,12 +2,12 @@
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "pstack-codex",
   "version": "0.15.3-dev.1",
-  "description": "Unofficial PStack engineering skills and playbooks adapted for local Codex and cloud agents.",
+  "description": "if you want to go fast, go deep first. pstack helps you write less, but higher quality code. rigorous agent workflows you can parallelize with confidence. Adapted for Codex.",
   "author": {
-    "name": "Zidane Adhitya"
+    "name": "Lauren Tan"
   },
-  "homepage": "https://github.com/aldiz1711/pstack-codex",
-  "repository": "https://github.com/aldiz1711/pstack-codex",
+  "homepage": "https://github.com/cursor/plugins/tree/main/pstack",
+  "repository": "https://github.com/cursor/plugins",
   "license": "MIT",
   "keywords": [
     "pstack",
@@ -23,10 +23,10 @@
       "interface": {
         "displayName": "PStack for Codex",
         "shortDescription": "PStack engineering workflows",
-        "developerName": "Zidane Adhitya",
+        "developerName": "Lauren Tan",
         "category": "Productivity",
         "logo": "./assets/logo.png",
-        "longDescription": "Unofficial adaptation of Lauren Tan's PStack. Preserves the full engineering skills and playbooks with host-aware configuration and resource resolution for local Codex and cloud agents.",
+        "longDescription": "PStack engineering skills and playbooks adapted to Codex. Use Poteto Mode to route work through the original workflows.",
         "defaultPrompt": "Use $poteto-mode for this task and follow the matching PStack playbook.",
         "capabilities": [
           "Engineering workflows",

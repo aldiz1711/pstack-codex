@@ -3,8 +3,6 @@ name: swarm
 description: "Fan out N parallel workers, drain them, and return one report. Use for $swarm, 'swarm this', or parallel coverage, races, gauntlets, and exploration."
 ---
 
-Before selecting models or delegating, reuse the caller's resolved PStack role map. If none was passed, read `setup-pstack/references/model-config.md` and `poteto-mode/references/host-runtime.md` through this skill's verified PStack namespace or skill-directory parent.
-
 # Swarm
 
 Fan out N Codex subagents. They may cover separate slices, race the same brief, or mix both. The parent waits, aggregates, and returns one report.
@@ -23,7 +21,7 @@ Open a todolist with one entry per phase before launching anything.
 1. State the done predicate and the artifact or report the swarm must return.
 2. Choose the shape. Partition into slices, race N workers on identical briefs, or mix both. For a race or mixed shape, declare `first pass`, `rank all`, or `best-of` before spawning.
 3. Set N from the user or derive it from the shape. N is total workers; launch them in waves if Codex has a lower concurrency limit.
-4. Pick the worker model from `swarm workers` in the resolved PStack role map when present. Missing user lines use the bundled role default. For a model race, name each arm's model up front.
+4. Pick the worker model from `swarm workers` in `~/.codex/pstack-models.md` when present. Otherwise use `gpt-6-luna` at xhigh reasoning. For a model race, name each arm's model up front.
 5. Give each worker its own writable output when it writes.
 
 ## Phase B: Fan out

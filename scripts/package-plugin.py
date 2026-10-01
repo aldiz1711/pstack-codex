@@ -31,7 +31,6 @@ def validate(root: Path) -> dict:
     skills = sorted((root / "skills").glob("*/SKILL.md"))
     if len(skills) != 49:
         raise ValueError("the complete pack requires 49 skills")
-    names = []
     for file in skills:
         text = file.read_text()
         if not text.startswith("---\n") or "\n---\n" not in text[4:]:
@@ -42,10 +41,6 @@ def validate(root: Path) -> dict:
             raise ValueError(f"skill name mismatch in {file}")
         if not re.search(r"^description:\s*\S", frontmatter, re.MULTILINE):
             raise ValueError(f"missing skill description in {file}")
-        names.append(file.parent.name)
-    index = json.loads((root / "skills/poteto-mode/references/skill-index.json").read_text())
-    if index["plugin"] != name or index["skills"] != {value: value for value in names}:
-        raise ValueError("skill index differs from the complete pack")
     playbooks = list((root / "skills/poteto-mode/playbooks").glob("*.md"))
     if len(playbooks) != 23:
         raise ValueError("the complete pack requires 23 playbooks")
@@ -86,15 +81,39 @@ def tracked_source(root: Path) -> list[Path]:
     return sorted(set(files))
 
 
+def validate_export(root: Path, files: list[Path], account: bool) -> None:
+    required = {root / name for name in [
+        "plugin.json", ".codex-plugin/plugin.json", "LICENSE", "README.md",
+        "skills/poteto-mode/references/poteto-agent.md",
+        "skills/no-comments/references/comment-sicko.md",
+    ]}
+    for directory in ["skills", "agents", "assets", "hooks", "licenses", ".codex/agents"]:
+        required.update(
+            file for file in (root / directory).rglob("*")
+            if file.is_file() and not EXCLUDED_PARTS.intersection(file.relative_to(root).parts)
+        )
+    if not account:
+        required.add(root / MARKETPLACE)
+    exported = set(files)
+    missing = sorted(
+        path.relative_to(root).as_posix()
+        for path in required if path not in exported or not path.is_file()
+    )
+    if missing:
+        raise ValueError("required package resources are not exported: " + ", ".join(missing))
+
+
 def package(root: Path, output: Path, account: bool = True) -> dict:
     root, output = root.resolve(), output.resolve()
     if output.is_relative_to(root):
         raise ValueError("write the archive outside the plugin source directory")
     report = validate(root)
+    source = tracked_source(root)
+    validate_export(root, source, account)
     output.parent.mkdir(parents=True, exist_ok=True)
     files = []
     with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
-        for file in tracked_source(root):
+        for file in source:
             relative = file.relative_to(root)
             if not file.is_file():
                 raise ValueError(f"tracked source is missing: {relative}")

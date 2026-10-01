@@ -1,25 +1,4 @@
 import type * as T from "./types.ts";
-import { mergeGateReason } from "./policy.ts";
-
-const MERGE_GATE_LABELS = {
-  "closed-without-merge": "❌ closed",
-  "draft-pr": "⏸ draft",
-  "changes-requested": "⚠️ changes requested",
-  "approval-required": "⏸ approval required",
-  "merge-blocked": "⏸ blocked",
-  "stale-base": "⚠️ behind base",
-  "mergeability-unknown": "⏳ mergeability unknown",
-} satisfies Record<T.MergeGateReason, string>;
-
-const MERGE_GATE_ACTIONS = {
-  "closed-without-merge": "restore or remove the closed PR from the queued stack",
-  "draft-pr": "mark the PR ready for review before waiting for the merge queue",
-  "changes-requested": "resolve the changes-requested review before waiting for the merge queue",
-  "approval-required": "wait for required reviewer or owner approval; no CI retry or code change is needed for this gate",
-  "merge-blocked": "inspect GitHub branch rules and remaining merge requirements, then rearm",
-  "stale-base": "ask the branch owner to update the base and run a drift sweep, then rearm",
-  "mergeability-unknown": "wait for GitHub to calculate mergeability, then rearm",
-} satisfies Record<T.MergeGateReason, string>;
 export const renderJson = (verdict: T.WatcherVerdict): string =>
   `${JSON.stringify(verdict)}\n`;
 function ciCell(row: T.PrSnapshot): string {
@@ -54,14 +33,14 @@ function reviewCell(row: T.PrSnapshot): string {
 function mergeCell(row: T.PrSnapshot): string {
   if (row.kind === "merged") return "✅ merged";
   if (row.kind === "closed") return "❌ closed";
-  if (
-    row.facts.mergeable === "CONFLICTING" ||
+  if (row.facts.isDraft) return "⏸ draft";
+  if (row.facts.reviewDecision === "CHANGES_REQUESTED")
+    return "⚠️ changes requested";
+  return row.facts.mergeable === "CONFLICTING" ||
     row.facts.mergeStateStatus === "DIRTY" ||
     row.facts.mergeStateStatus === "CONFLICTING"
-  )
-    return "⚠️ conflict";
-  const reason = mergeGateReason(row);
-  return reason === null ? "✅" : MERGE_GATE_LABELS[reason];
+    ? "⚠️ conflict"
+    : "✅";
 }
 export function renderStatusTable(rows: T.NonEmpty<T.PrSnapshot>): string {
   const lines = ["| PR | CI | Review | Merge |", "| --- | --- | --- | --- |"];
@@ -125,7 +104,12 @@ function renderBlocker(blocker: T.MergeBlocker | StatusQueryBlocker): string {
       ].join("\n");
     }
     case "merge-gate": {
-      const action = MERGE_GATE_ACTIONS[blocker.reason];
+      const action =
+        blocker.reason === "closed-without-merge"
+          ? "restore or remove the closed PR from the queued stack"
+          : blocker.reason === "draft-pr"
+            ? "mark the PR ready for review before waiting for the merge queue"
+            : "resolve the changes-requested review before waiting for the merge queue";
       return [
         `BLOCKER: ${blocker.reason}`,
         `pr=${blocker.pr.number}`,

@@ -10,7 +10,6 @@ import {
   queryBackoffSeconds,
   readSnapshot,
   runQueued,
-  runSimple,
   selectTierMajorStackDecision,
 } from "./policy.ts";
 import {
@@ -43,8 +42,8 @@ const options = {
   allowDraft: false,
 } satisfies PollingOptions;
 
-describe("GitHub CI refusal truth table", () => {
-  it("assesses CI refusal without treating merge state as readiness", () => {
+describe("readiness truth table", () => {
+  it("covers every specified row and every UNKNOWN rollup value", () => {
     const cases: readonly [
       PullRequestFacts["mergeStateStatus"],
       RollupState,
@@ -87,117 +86,6 @@ describe("GitHub CI refusal truth table", () => {
     expect(classifyPr(snapshot)).toMatchObject({
       kind: "blocker",
       blocker: { kind: "failing-checks" },
-    });
-  });
-});
-
-describe("merge eligibility is separate from green CI", () => {
-  const cases = [
-    [{ mergeStateStatus: "BLOCKED", reviewDecision: "REVIEW_REQUIRED" }, "approval-required"],
-    [{ mergeStateStatus: "BLOCKED" }, "merge-blocked"],
-    [{ mergeStateStatus: "BEHIND" }, "stale-base"],
-    [{ mergeStateStatus: "UNKNOWN" }, "mergeability-unknown"],
-    [{ mergeable: "UNKNOWN" }, "mergeability-unknown"],
-  ] as const;
-
-  for (const [facts, reason] of cases)
-    it(`withholds READY for ${JSON.stringify(facts)} with passing checks`, async () => {
-      const reader = fakeReader({ facts });
-      const snapshot = await readSnapshot({
-        reader,
-        context: context(1),
-        pendingHistory: "include",
-        allowDraft: false,
-      });
-      if (snapshot.kind !== "open") throw new Error("expected open snapshot");
-      expect(snapshot.ci.kind).toBe("ci-clean");
-      expect(classifyPr(snapshot)).toMatchObject({
-        kind: "blocker",
-        blocker: { kind: "merge-gate", reason },
-      });
-      expect(selectTierMajorStackDecision([snapshot])).toMatchObject({
-        kind: "blocker",
-        blocker: { kind: "merge-gate", reason },
-      });
-      const queue = applyQueueSnapshot(
-        createQueueState([context(1)], 0),
-        snapshot,
-        0,
-        options
-      ).state;
-      expect(evaluateQueue(queue, 0, options)).toMatchObject({
-        kind: "blocker",
-        blocker: { kind: "merge-gate", reason },
-      });
-      const verdict = await runSimple({
-        dependencies: {
-          reader,
-          clock: { now: () => 0, observedAt: () => "now", async sleep() {} },
-          emit() {},
-        },
-        contexts: [context(1)],
-        mode: "single",
-        statusOnly: false,
-        options,
-      });
-      expect(verdict).toMatchObject({
-        kind: "BLOCKER",
-        exitCode: 6,
-        blocker: { kind: "merge-gate", reason },
-      });
-    });
-
-  it("reports the Code Review Gate as a human wait while CI stays green", async () => {
-    const snapshot = await readSnapshot({
-      reader: fakeReader({
-        fastPath: {
-          kind: "checks",
-          checks: [passingCheck(), {
-            ...pendingCheck("Code Review Gate"),
-            kind: "code-review-gate",
-            name: "Code Review Gate",
-          }],
-        },
-        commitRollups: [{ oid: "head", state: "PENDING" }],
-      }),
-      context: context(1),
-      pendingHistory: "include",
-      allowDraft: false,
-    });
-    if (snapshot.kind !== "open") throw new Error("expected open snapshot");
-    expect(snapshot.ci.kind).toBe("ci-clean");
-    expect(classifyPr(snapshot)).toMatchObject({
-      kind: "blocker",
-      blocker: { kind: "merge-gate", reason: "approval-required" },
-    });
-  });
-
-  it("keeps waiting for ordinary CI before reporting owner approval", async () => {
-    const snapshot = await readSnapshot({
-      reader: fakeReader({
-        facts: { mergeStateStatus: "BLOCKED", reviewDecision: "REVIEW_REQUIRED" },
-        fastPath: { kind: "checks", checks: [pendingCheck("build")] },
-      }),
-      context: context(1),
-      pendingHistory: "omit",
-      allowDraft: false,
-    });
-    expect(classifyPr(snapshot)).toMatchObject({
-      kind: "waiting",
-      pending: [{ name: "build" }],
-    });
-  });
-
-  it("allows an explicitly permitted draft after CI finishes", async () => {
-    const snapshot = await readSnapshot({
-      reader: fakeReader({ facts: { isDraft: true, mergeStateStatus: "DRAFT" } }),
-      context: context(1),
-      pendingHistory: "include",
-      allowDraft: true,
-    });
-    expect(classifyPr(snapshot, true)).toMatchObject({
-      kind: "ready",
-      pr: { proof: { gate: { draft: "draft-allowed" } } },
     });
   });
 });

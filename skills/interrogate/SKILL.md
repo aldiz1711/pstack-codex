@@ -3,8 +3,6 @@ name: interrogate
 description: "Use for \"interrogate\", \"adversarial review\", \"multi-model review\", \"challenge this\", \"stress test this code\", \"find blind spots\", or \"tear this apart\". Multiple LLM reviewers challenge changes from independent angles."
 ---
 
-Before selecting models or delegating, reuse the caller's resolved PStack role map. If none was passed, read `setup-pstack/references/model-config.md` and `poteto-mode/references/host-runtime.md` through this skill's verified PStack namespace or skill-directory parent.
-
 # Interrogate
 
 Review code changes through separate, read-only sessions under the [independent review policy](../poteto-mode/references/independent-review.md). Each reviewer gets the same prompt and rubric. Reviewers may use the same model. Model diversity is optional.
@@ -34,10 +32,10 @@ Write one clear paragraph. If you're unsure about the intent, ask the user befor
 
 ## Step 3, Spawn Reviewers
 
-Use the `interrogate reviewers` list from the resolved PStack role map when configured, one reviewer per entry, including repeated models. Without that line, start with one reviewer on the parent model and effort. Add reviewers when the scope or risk needs more coverage, respecting any count the user requests. Label sessions Reviewer A, B, and so on. Launch them up to the available Codex agent limit, queuing the rest.
+Use the `interrogate reviewers` list from `~/.codex/pstack-models.md` when present, one reviewer per entry, including repeated models. Without that line, start with one reviewer on the parent model and effort. Add reviewers when the scope or risk needs more coverage, respecting any count the user requests. Label sessions Reviewer A, B, and so on. Launch them up to the available Codex agent limit, queuing the rest.
 
 For each reviewer:
-- use Codex agent `pstack-readonly` in an effective read-only sandbox under the independent review policy
+- use registered Codex agent `pstack-readonly` or an equivalent supported separate reviewer in an effective read-only sandbox under the independent review policy
 - configured model and reasoning effort from the `interrogate reviewers` entry, or the parent model and effort with no configured line
 - set `fork_turns: "none"` and provide source context without the author's verdict or other reviewers' findings
 - pass the same review prompt and rubric

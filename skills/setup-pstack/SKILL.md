@@ -1,56 +1,66 @@
 ---
 name: setup-pstack
-description: Configure which models PStack uses per role and at what reasoning budget. Detect available models and save a user role map on local Codex or in ChatGPT Library. Use for $setup-pstack, "configure pstack models", "pstack budget", or changing PStack's model choices.
+description: Configure which Codex models pstack uses per role and at what reasoning budget. Detects available models and writes a PStack role map for its skills. Use for $setup-pstack, "configure pstack models", "pstack budget", or changing pstack's model choices.
 ---
 
 # Setup pstack
 
-Read `references/model-config.md` for the shared loading contract and bundled role map. Read `poteto-mode/references/host-runtime.md` through the verified PStack namespace or skill-directory parent for host capabilities. Preserve the user's existing choices unless this request changes them.
+Setup is optional. The inline defaults work without a saved role map. On local Codex, write `~/.codex/pstack-models.md`, the role map that pstack skills read before choosing a Codex subagent model and reasoning effort. The bundled `SessionStart` and `SubagentStart` hooks also load it into new Codex tasks and subagents. If `CODEX_HOME` is set, use that directory instead of `~/.codex` throughout this skill. On a cloud host without the local home-directory route, keep the chosen map in the current task or use an accessible user-selected configuration location. Verify any claimed storage and reload route. Local hooks are not a cloud startup mechanism. Codex has no Cursor `.mdc` rule or model slug with effort encoded at the end.
 
-## 1. Detect available models
+## Steps
 
-Enumerate model names and reasoning efforts accepted by the actual subagent launcher or model picker. Confirm each named combination before saving it. `inherit-parent` and `auto` omit both overrides and are always valid.
+### 1. Detect available models
 
-## 2. Load current state
+Enumerate the model names and reasoning efforts accepted by the current Codex subagent tool or model picker. Never write a model or effort you have not confirmed is available. `inherit-parent` and `auto` mean to omit both overrides and are always valid.
 
-Read the chosen saved target's latest complete contents as the edit base before applying requested changes. Launch-resolution precedence does not choose the persistence base. Do not save task-only overrides or caller-resolved defaults unless the user asks to persist them. If no saved map exists, use the bundled map or a user-supplied map as the initial base. On actual local Codex, keep `${CODEX_HOME:-~/.codex}/pstack-models.md`. On ChatGPT cloud, use the user's exact `pstack-models.md` in Library when its tools are available. Resolve duplicate candidates before writing. An installed plugin reference is the public default, not a user store.
+### 2. Load current state
 
-## 3. Choose the budget and roles
+On local Codex, if `~/.codex/pstack-models.md` exists, read its budget and role values. On cloud, read the current task map or the explicitly selected accessible user map when one exists. Otherwise start from the `unlimited (max)` budget and role defaults in step 5. Keep any role that the user previously changed when rerunning setup.
 
-Ask for a budget only when the user has not supplied one. Offer `unlimited` for max reasoning, `large` for xhigh, `medium` for high, and `small` for medium. The default is unlimited. Show the recorded budget when there is one.
+### 3. Budget, map, and confirm
 
-The default example uses GPT-6.1 Sol max for ordinary work, including four-session Arena and Architect panels. GPT-6 Astra max handles the hardest tasks when the actual scope warrants it. Independent reviewers and the Arena judge inherit the parent. For example, these ordinary and hardest-task entries show the format. The complete canonical role map remains in `references/model-config.md`.
+**(a) Ask for a budget.** Offer the four original options: `unlimited — keep max`, `large — xhigh reasoning`, `medium — high reasoning`, and `small — medium reasoning`. The default is `unlimited — keep max` when the user does not choose another budget. Name the current budget when one is recorded.
+
+**(b) Apply it.** Store the reasoning effort separately from the model name. `unlimited` leaves each role at its listed effort. `large`, `medium`, and `small` target `xhigh`, `high`, and `medium`. If a model does not support the target effort, use its highest supported effort at or below the target or mark the role as needing a choice. Do not change `inherit-parent` or `auto`.
+
+**(c) Show the roles and confirm.** Show every role with its model and effort, flagging unavailable choices. Offer the available models, supported efforts, `inherit-parent`, and `auto` as alternatives. Panel roles (arena runners, architect runners, interrogate reviewers) contain one entry per desired subagent, including repeated models. `arena cross-judge pool` contains choices from which Arena selects one. Independent reviews follow the [independent review policy](../poteto-mode/references/independent-review.md). They default to the parent model and effort, with model diversity optional. The current Codex concurrency limit may require running a panel in waves.
+
+### 4. Validate
+
+Every named model and effort must be supported by the current Codex client. `inherit-parent` and `auto` always pass. Ask the user to choose again for an unavailable value.
+
+### 5. Write the role map
+
+On local Codex, overwrite `~/.codex/pstack-models.md` so reruns stay idempotent. On cloud, update the confirmed user-selected target or return a clearly labeled task-scoped map; do not write into installed plugin resources. This is PStack's role map, loaded by the bundled hooks and read by its skills; Codex's actual subagent calls receive separate `model` and reasoning-effort values. A role with no line keeps its skill default. Format:
 
 ```text
+# pstack model configuration. Delete a line to use the skill default.
 # budget: unlimited (max)
-feature, refactoring: gpt-6.1-sol | max
+feature, refactoring: gpt-6-luna | xhigh
+bug-fix: gpt-6-luna | xhigh
+perf-issue: gpt-6-luna | xhigh
+hillclimb: gpt-6-luna | xhigh
+judgment and prose: gpt-6-astra | max
 hardest tasks: gpt-6-astra | max
+how explorer: gpt-6-luna | xhigh
+how explainer: gpt-6-astra | max
+why investigators: gpt-6-luna | xhigh
+why synthesizer: gpt-6-astra | max
+reflect tooling: gpt-6-sol | max
+reflect judgment, divergent, synthesizer: gpt-6-astra | max
+arena runners: gpt-6-astra | max, gpt-6-astra | max, gpt-6-astra | max, gpt-6-astra | max
+arena cross-judge pool: inherit-parent
+swarm workers: gpt-6-luna | xhigh
+architect runners: gpt-6-astra | max, gpt-6-astra | max, gpt-6-astra | max, gpt-6-astra | max
+interrogate reviewers: inherit-parent
 ```
 
-Keep the model and reasoning effort separate. Unlimited preserves each selected role's listed effort. Other budgets target their named effort. If a model does not support it, show its highest supported effort at or below the target and ask for a choice. Preserve `inherit-parent` and `auto`.
+Use only confirmed available combinations. If a default is unavailable, choose an equivalent the user can access or `inherit-parent` rather than writing a broken entry.
 
-Show all roles, available alternatives, unavailable combinations, and panel sizes. Repeated panel entries create separate sessions. A judge pool selects one entry. Respect the observed concurrency limit by running waves. Confirm the requested role map and its storage destination before saving when the request has not already specified them.
+### 6. Confirm
 
-## 4. Validate
+Report the verified target or task scope. Read back saved choices before claiming that they were written. On local Codex, the bundled hook loads it when a Codex task starts, resumes, or compacts, and when a subagent starts. On cloud, pass the selected role choices explicitly to delegates; do not claim automatic cross-task loading without a verified host route. Codex requires the user to review and trust a new or changed plugin hook before it runs; direct them to Codex's hook review (`/hooks` in the CLI) if this hook is pending. Do not claim automatic loading until the hook is trusted. Re-running this skill updates the model map without changing the hook definition.
 
-Check every named model and effort against this host's launcher. An unavailable explicit choice needs a user-selected replacement or authorized fallback. Do not silently substitute a model or effort. Apply only the requested or confirmed changes to the saved base. Current-task overrides still govern launches without becoming stored choices automatically.
+### 7. Offer a verification skill (optional)
 
-## 5. Save the user map
-
-Use the text format in `references/model-config.md`. Update idempotently and preserve unrelated content.
-
-- On local Codex, write the existing home-directory map. Keep trusted `SessionStart` and `SubagentStart` hooks available; setup does not silently enable trust or alter host model settings.
-- On ChatGPT cloud with Library available, read the current Library skill and discover its supported write tools. For an existing user-owned map, replace the same confirmed `library_file_id` and pass its observed version guard when supported. Create `pstack-models.md` only after a successful lookup establishes that there is no existing identity. Retain the returned ID, filename, and version. Follow the Library skill's upload and local identity requirements. On a version conflict, read the latest map and reconcile the requested change without dropping concurrent edits.
-- If Library is unavailable, use an accessible user-selected configuration location or a labeled session map. Explain that a fresh task must be given that map unless its storage and lookup route have been verified. Do not claim a cloud workspace file, saved environment, or Vault value is writable or globally persistent without support.
-
-Do not modify bundled plugin defaults as a way to save one user's choices. Never add private Library IDs or workspace paths to the distributed plugin.
-
-## 6. Verify and report scope
-
-Read the saved map's latest complete contents and compare them with the confirmed choices. For Library, retain the stable identity and verify that exact-title lookup resolves the intended file; a fresh task can then use the model contract's lookup path. If lookup is delayed or ambiguous, report that limitation rather than creating another file.
-
-Report the verified storage, budget, and changed roles. Pass the refreshed resolved choices and source to the current task. Model-selecting entrypoints load explicitly; pure principle and writing leaves need no repeated loading. Trusted local hooks remain optional. Saving the map does not change the parent picker or create an always-on cloud startup hook.
-
-## 7. Offer a verification skill when useful
-
-Check for a project-local `verify-*` skill or existing real-app harness. If neither exists, offer once to generate one with `$create-verification-skill`. Proceed only if the user wants it.
+Check whether the project has a way to drive the real app for proof (a `verify-*` skill, or an existing harness). If not, offer once: "want a project-local verification skill, so agents can drive the app the way a user does and prove changes work? I can generate one with $create-verification-skill." On yes, invoke `$create-verification-skill`. On no, move on without pushing.
