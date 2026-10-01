@@ -3,9 +3,6 @@ name: principle-guard-the-context-window
 description: "Apply when context is filling up: large outputs, long files, repeated reads, fan-out planning. Route bulk to subagents; keep summaries in the main thread, not raw payloads."
 ---
 
-Before applying this workflow, read `poteto-mode/references/host-runtime.md`. Resolve `poteto-mode` from the catalog or explicitly as a sibling under this loaded PStack skill's verified package namespace or skill-directory parent. Do not guess a plugin ID. The reference defines resource resolution, host capabilities, and model configuration.
-
-
 # Guard the Context Window
 
 The context window is finite and non-renewable within a session. Every token should be worth its cost.

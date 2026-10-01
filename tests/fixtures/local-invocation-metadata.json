@@ -43,5 +43,8 @@
   "skills/how/agents/openai.yaml": "0338bb3ec2178a7ff45575264ecaf2ec8afb30643fc8b0817990c7ec3c5b75e4",
   "skills/principle-foundational-thinking/agents/openai.yaml": "5dc8c5d0f35b3e27dbd18a6e757f4341d82583f895d8c5d63f496ceee5a8f519",
   "skills/technical-writing/agents/openai.yaml": "aaec2bdbec3b88f857f585178f6a76dc3c833fbe581afec6918d3a2efa6b2294",
-  "skills/maintain-verification-skill/agents/openai.yaml": "cc151a9095a0f35de45e2927921865076ed473facc21b8b5ac96f081c1e5b150"
+  "skills/maintain-verification-skill/agents/openai.yaml": "cc151a9095a0f35de45e2927921865076ed473facc21b8b5ac96f081c1e5b150",
+  "hooks/hooks.json": "743e7b837a185dcaedfff82098b5cd24b31240f5df6153be028b42540ce9dabe",
+  "hooks/load-pstack-models.py": "d9100a269c2c3df3d08506ad4414dc552f6e9594b9f23a300510aa8ee491d8ad",
+  ".codex/agents/pstack-readonly.toml": "129171b13cb39d6e2b65afb4cedae32194495b297dc55cde56afca004b4bd556"
 }

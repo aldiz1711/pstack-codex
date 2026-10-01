@@ -3,9 +3,6 @@ name: technical-writing
 description: "Layered technical-writing standard: Diátaxis structure, Google developer style sentences, STE instruction rules, Global English syntax. Use for $technical-writing or when writing or reviewing docs, RFCs, readmes, PR descriptions, or commit messages."
 ---
 
-Before applying this workflow, read `poteto-mode/references/host-runtime.md`. Resolve `poteto-mode` from the catalog or explicitly as a sibling under this loaded PStack skill's verified package namespace or skill-directory parent. Do not guess a plugin ID. The reference defines resource resolution, host capabilities, and model configuration.
-
-
 # Technical writing
 
 The goal is writing a tired engineer understands on the first read. Four layers get you there, one question each: what kind of document is this, how do sentences address the reader, how much does each sentence carry, and can any sentence be read two ways. Apply all four.

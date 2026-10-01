@@ -3,9 +3,6 @@ name: principle-foundational-thinking
 description: "Apply before writing logic: choosing core types and data structures, sequencing scaffold-vs-feature work, asking what concurrent actors share. Get the data structures right so downstream code becomes obvious."
 ---
 
-Before applying this workflow, read `poteto-mode/references/host-runtime.md`. Resolve `poteto-mode` from the catalog or explicitly as a sibling under this loaded PStack skill's verified package namespace or skill-directory parent. Do not guess a plugin ID. The reference defines resource resolution, host capabilities, and model configuration.
-
-
 # Foundational Thinking
 
 **Structural decisions** protect option value. **Code-level decisions** protect simplicity.

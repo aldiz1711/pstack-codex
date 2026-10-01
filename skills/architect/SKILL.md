@@ -3,8 +3,7 @@ name: architect
 description: "Sketch types, signatures, and module structure before code, then stay in the loop while implementation fills in. Use for $architect, 'architect this', 'design this', or non-trivial work where jumping to code would lock in the wrong shape."
 ---
 
-Before applying this workflow, read `poteto-mode/references/host-runtime.md`. Resolve `poteto-mode` from the catalog or explicitly as a sibling under this loaded PStack skill's verified package namespace or skill-directory parent. Do not guess a plugin ID. The reference defines resource resolution, host capabilities, and model configuration.
-
+Before selecting models or delegating, reuse the caller's resolved PStack role map. If none was passed, read `setup-pstack/references/model-config.md` and `poteto-mode/references/host-runtime.md` through this skill's verified PStack namespace or skill-directory parent.
 
 # Architect
 
@@ -32,7 +31,7 @@ Skip Phase A only when the work is genuinely greenfield with no surrounding syst
 
 Run the **arena** skill with the design-sketch task and the Phase A grounding artifacts. Pass `references/runner-prompt.md` as each runner's prompt. Each candidate produces a design package shaped per `references/rationale-template.md`.
 
-Use your configured architect runners (default four independent `gpt-6-astra` runners at max reasoning).
+Pass the resolved `architect runners` entries to Arena as this invocation's runner choices, including their model, effort, and panel size. Arena uses those supplied choices before its own `arena runners` default.
 
 Design it twice. Require at least two structurally distinct candidates before synthesis, even when the first looks sufficient. This is the **exhaust-the-design-space** principle skill made concrete. Whole-shape alternatives, not point fixes inside one shape.
 

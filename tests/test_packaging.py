@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import shutil
 import tempfile
+import subprocess
 import unittest
 import zipfile
 
@@ -68,6 +69,22 @@ class PackagingTests(unittest.TestCase):
         self.assertIn("explain", read(how, "references/explainer-prompt.md").lower())
         with self.assertRaises(AssertionError):
             read(how, "../poteto-mode/SKILL.md")
+
+    def test_archive_excludes_untracked_and_ignored_user_files(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "source"
+            shutil.copytree(ROOT, root, ignore=shutil.ignore_patterns(".git", "__pycache__"))
+            subprocess.run(["git", "init", "--quiet"], cwd=root, check=True)
+            subprocess.run(["git", "add", "."], cwd=root, check=True)
+            extras = [".env.local", ".codex/pstack-models.md", "private-build.log"]
+            for name in extras:
+                (root / name).write_text("private fixture\n")
+            output = Path(directory) / "account.zip"
+            PACKAGER.package(root, output)
+            with zipfile.ZipFile(output) as archive:
+                for name in extras:
+                    self.assertNotIn("pstack-codex/" + name, archive.namelist())
+                self.assertIn("pstack-codex/skills/setup-pstack/references/model-config.md", archive.namelist())
 
     def test_symlink_and_output_inside_source_are_rejected(self):
         with self.assertRaisesRegex(ValueError, "outside"):

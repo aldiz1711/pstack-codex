@@ -3,8 +3,7 @@ name: poteto-mode
 description: poteto's agent style for concise, detailed responses, deliberate subagents, unslopped prose, simple code, and verified work. Use for poteto, $poteto-mode, or requests to work in this style.
 ---
 
-Before routing work, read `references/host-runtime.md` and `references/model-config.md` through this skill's package or verified skill directory.
-
+Before routing work, read `references/host-runtime.md` and `setup-pstack/references/model-config.md` through the verified PStack namespace or skill-directory parent. Resolve the role map once for this task and pass the resolved choices and source to delegates. Refresh after setup changes it or the task resumes.
 
 # Poteto mode
 
@@ -92,7 +91,7 @@ Read the leaf skill in full for any principle you apply. Each entry names when i
 
 Read-only workflow roles (`how` explorers and explainers, `interrogate` reviewers, and the Arena judge) use Codex agent `pstack-readonly` in an effective read-only sandbox. The role name alone does not prove that boundary. If it cannot be enforced, do not count the result as an independent read-only verdict.
 
-**Defaults for every supported subagent call.** Use `fork_turns: "none"` when the launcher exposes it. Pass a concise self-contained task brief and verified skill/resource locators. Launch asynchronously when supported. Read the host runtime and resolve configuration before model selection. Pass model and reasoning effort separately only when supported. The bundled role map preserves the original defaults and routed-skill fallbacks. The hardest code changes use the configured `hardest tasks` role, as before. Explicit user role choices override defaults; `inherit-parent` and `auto` omit both overrides. Confirm availability rather than silently replacing an explicit choice.
+**Defaults for every supported subagent call.** Use `fork_turns: "none"` when the launcher exposes it. Pass a concise self-contained task brief and verified skill/resource locators. Launch asynchronously when supported. Use the resolved role map before model selection and include the relevant role choices and source in each brief. Pass model and reasoning effort separately only when supported. The bundled role map uses GPT-6.1 Sol max for ordinary work and GPT-6 Astra max for the hardest tasks. Task difficulty, not the skill's name, selects the hardest-task role. Explicit user role choices override defaults; `inherit-parent` and `auto` omit both overrides. Confirm availability rather than silently replacing an explicit choice.
 
 Independent reviewer fallbacks follow the independent review policy rather than the general prose and judgment defaults above.
 

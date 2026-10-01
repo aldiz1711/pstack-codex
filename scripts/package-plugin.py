@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 import re
 import stat
+import subprocess
 import zipfile
 
 
@@ -63,6 +64,28 @@ def validate(root: Path) -> dict:
     return {"name": name, "version": portable["version"], "skills": len(skills), "playbooks": len(playbooks)}
 
 
+def tracked_source(root: Path) -> list[Path]:
+    try:
+        checkout = subprocess.check_output(
+            ["git", "rev-parse", "--show-toplevel"], cwd=root, text=True, stderr=subprocess.PIPE
+        ).strip()
+        if Path(checkout).resolve() != root:
+            raise ValueError("package from the repository root checkout")
+        names = subprocess.check_output(["git", "ls-files", "-z", "--cached"], cwd=root)
+    except (FileNotFoundError, subprocess.CalledProcessError) as error:
+        raise ValueError("packaging requires Git and a source checkout") from error
+    files = []
+    for name in names.decode("utf-8").split("\0"):
+        if not name:
+            continue
+        file = root / name
+        if not file.resolve().is_relative_to(root):
+            raise ValueError(f"tracked source escapes the checkout: {name}")
+        if not EXCLUDED_PARTS.intersection(Path(name).parts):
+            files.append(file)
+    return sorted(set(files))
+
+
 def package(root: Path, output: Path, account: bool = True) -> dict:
     root, output = root.resolve(), output.resolve()
     if output.is_relative_to(root):
@@ -71,10 +94,10 @@ def package(root: Path, output: Path, account: bool = True) -> dict:
     output.parent.mkdir(parents=True, exist_ok=True)
     files = []
     with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
-        for file in sorted(root.rglob("*")):
+        for file in tracked_source(root):
             relative = file.relative_to(root)
-            if EXCLUDED_PARTS.intersection(relative.parts) or not file.is_file():
-                continue
+            if not file.is_file():
+                raise ValueError(f"tracked source is missing: {relative}")
             if account and relative.as_posix() == MARKETPLACE:
                 continue
             info = zipfile.ZipInfo(f"{report['name']}/{relative.as_posix()}", (1980, 1, 1, 0, 0, 0))

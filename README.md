@@ -1,6 +1,6 @@
 # PStack for Codex
 
-An unofficial Codex adaptation of [PStack](https://github.com/cursor/plugins/tree/main/pstack), the engineering skills and playbooks created by [Lauren Tan (Poteto)](https://github.com/poteto). This repository keeps PStack's workflows and principles while mapping integration to the actual local or cloud host. The original local model defaults and invocation policies remain unchanged.
+An unofficial Codex adaptation of [PStack](https://github.com/cursor/plugins/tree/main/pstack), the engineering skills and playbooks created by [Lauren Tan (Poteto)](https://github.com/poteto). This repository keeps PStack's workflows and principles while mapping integration to the actual local or cloud host. Local user configuration, trusted hooks, and invocation policies remain intact.
 
 PStack's central idea is simple: make fewer changes, verify them against real behavior, and use parallel agents only when their work can be reviewed. [`$poteto-mode`](./skills/poteto-mode/SKILL.md) chooses a playbook for the task and calls the other skills as needed.
 
@@ -17,7 +17,7 @@ codex plugin marketplace add aldiz1711/pstack-codex
 codex plugin add pstack-codex@pstack-codex
 ```
 
-Start a new task so it discovers the installed skills. Manual-only skills, including Poteto Mode, stay explicit-only. The shared [host runtime](./skills/poteto-mode/references/host-runtime.md) resolves their owning resources even when an automatic catalog omits them. A trusted local hook can supply `~/.codex/pstack-models.md`; every workflow also loads configuration explicitly, so cloud operation does not depend on hooks.
+Start a new task so it discovers the installed skills. Manual-only skills, including Poteto Mode, stay explicit-only. The shared [host runtime](./skills/poteto-mode/references/host-runtime.md) resolves their owning resources even when an automatic catalog omits them. A trusted local hook can supply `~/.codex/pstack-models.md`; model-selecting workflows load configuration explicitly, so cloud operation does not depend on hooks.
 
 Run `$setup-pstack` to choose a reasoning budget and models for each role. Its default budget is **unlimited (max)**. Then use `$poteto-mode` on a real task:
 
@@ -29,7 +29,7 @@ See the [setup guide](./docs/guide/01-setup.md) for model configuration and pull
 
 ## Package this source for ChatGPT
 
-Run from a checkout of the exact branch or commit you intend to install. Python 3.9 or newer is sufficient for the packager.
+Run from a checkout of the exact branch or commit you intend to install. The packager requires Git and Python 3.9 or newer. It exports tracked source files and excludes untracked or ignored local files. Add new source resources to the index before packaging a working candidate.
 
 ```sh
 python3 scripts/package-plugin.py
@@ -37,7 +37,7 @@ python3 -m unittest discover -s tests
 python3 scripts/package-plugin.py --output ../pstack-codex-account.zip
 ```
 
-The account ZIP contains one `pstack-codex` directory and all 49 skills, 23 playbooks, resources, scripts, and licenses. It excludes only the local marketplace registration `.agents/plugins/marketplace.json`, plus Git metadata, dependency caches, and build output. The original registration remains in source. Use the supported Plugin Creator archive-import route for a private account install; packaging alone does not install or publish it. No public release asset or OpenAI directory submission is created by these commands.
+The account ZIP contains one `pstack-codex` directory and all 49 skills, 23 playbooks, resources, scripts, and licenses. It exports tracked source and excludes the local marketplace registration `.agents/plugins/marketplace.json`, Git metadata, dependency caches, and build output. Ignored or untracked user files never enter the account archive. The original registration remains in source. Use the supported Plugin Creator archive-import route for a private account install; packaging alone does not install or publish it. No public release asset or OpenAI directory submission is created by these commands.
 
 For a source archive that retains marketplace registration, add `--source`. That archive is for source/local distribution and is not the standalone account-import ZIP. Both forms use stable file order, normalized permissions, and fixed timestamps; the command reports their SHA-256.
 
@@ -48,7 +48,7 @@ The proposed `0.15.3-dev.1` source version orders above `0.15.2` under SemVer. I
 - **Routes work through playbooks.** `$poteto-mode` covers investigation, bug fixes, features, refactoring, performance, PR babysitting, shipping, and longer autonomous runs. It stays active in the task until you opt out.
 - **Uses focused skills and principles.** `$how`, `$why`, `$architect`, `$arena`, `$swarm`, `$interrogate`, and the verification skills can also be called directly. The [guide](./docs/guide/README.md) and [`poteto-mode` skill](./skills/poteto-mode/SKILL.md) lead to the full instructions.
 - **Makes review and proof explicit.** Agents inspect diffs, check claims against the code, and exercise the real app where the playbook requires it. `$interrogate` runs PStack's local review panel.
-- **Lets you configure model roles.** `$setup-pstack` preserves the local configuration route or uses a verified cloud user store/session map. The [public defaults](./skills/poteto-mode/references/model-config.md) retain GPT-6 Luna xhigh for scoped code work, Astra max for judgment/hardest tasks, and parent-inheriting independent reviewers. The [Sol/Astra xhigh profile](./skills/setup-pstack/references/profiles/sol-astra-xhigh.md) is optional. Actual launcher availability is checked before delegation.
+- **Lets you configure model roles.** `$setup-pstack` keeps the local home-directory map and can create or update your `pstack-models.md` in ChatGPT Library. The [shared model contract](./skills/setup-pstack/references/model-config.md) uses GPT-6.1 Sol max for ordinary work and GPT-6 Astra max for the hardest tasks, with an unlimited budget. Existing user maps and task overrides take precedence. Independent reviewers inherit the parent. Actual launcher availability is checked before delegation.
 
 For example:
 
@@ -64,17 +64,17 @@ PStack's playbooks, skill instructions, and engineering principles remain the so
 
 | PStack need | Codex mechanism |
 | --- | --- |
-| Model choices loaded into agent sessions | Every entrypoint explicitly resolves the role map. A supported trusted local Codex hook is optional. |
+| Model choices loaded into agent sessions | Poteto resolves the map once and passes role choices. Direct delegation skills load it when needed. Trusted local hooks remain optional. |
 | Durable objectives and recurring audits | Supported host objectives and wakeups. Missing equivalents remain blocked. |
 | Parallel workers and independent reviewers | Supported subagents and isolated outputs. An enforced read-only gate requires verified permissions; a role name or worktree alone is insufficient. |
 | Local code review | `$interrogate` keeps PStack's review workflow; Codex `/review` is also available. |
 | Automated GitHub PR review | Enable [Codex Cloud Code Review](https://developers.openai.com/codex/cloud/code-review) separately for the repository. PStack's babysit playbook then triages its review threads. |
 
-Cursor supports a wider mix of model providers. To keep Arena candidates at comparable capability in Codex, the default Arena runs four independent GPT-6 Astra candidates at max reasoning. Its separate, read-only judge uses the configured choice or the parent model and effort. `$setup-pstack` can change this panel. Model diversity is optional. Independent runs of one model can still share blind spots, so reviewers must support their findings with evidence.
+Cursor supports a wider mix of model providers. To keep Arena candidates at comparable capability in Codex, the default Arena runs four independent GPT-6.1 Sol candidates at max reasoning. Difficult scope can use the hardest-task role; the skill name alone does not trigger it. Its separate, read-only judge uses the configured choice or the parent model and effort. `$setup-pstack` can change this panel. Model diversity is optional. Independent runs of one model can still share blind spots, so reviewers must support their findings with evidence.
 
 ## Verification and supported boundaries
 
-The package requires no MCP server. Shell, forge, browser, local-app, and durable-task capabilities still come from the host. Original Bun helpers require Bun and their locked dependencies on a real writable executor. Orchestrate retains its original Graphite `gt` frontier requirement. Optional command hooks are supported only in a compatible local POSIX/Python environment after trust; cloud explicit loading is the fallback. Native Windows hook execution is not claimed.
+The package requires no MCP server. Shell, forge, browser, local-app, and durable-task capabilities still come from the host. Original Bun helpers require Bun and their locked dependencies on a real writable executor. Orchestrate retains its original Graphite `gt` frontier requirement. Optional command hooks are supported only in a compatible local POSIX/Python environment after trust; ChatGPT cloud explicitly reads the current user map from Library when available, or reports session scope. Native Windows hook execution is not claimed.
 
 The read-only PR workflow runs these package checks plus the original Bun helper suite and typecheck. It does not publish an archive or grant write permissions. Run helper tests locally where Bun is available:
 

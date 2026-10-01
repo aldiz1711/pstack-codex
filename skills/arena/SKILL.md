@@ -3,8 +3,7 @@ name: arena
 description: "Spawn N parallel candidates at the same task, pick a base, graft the strongest parts of the losers into it. Use for $arena, 'arena this', 'throw it in the arena', or when one attempt at a non-trivial artifact would lock in the wrong shape."
 ---
 
-Before applying this workflow, read `poteto-mode/references/host-runtime.md`. Resolve `poteto-mode` from the catalog or explicitly as a sibling under this loaded PStack skill's verified package namespace or skill-directory parent. Do not guess a plugin ID. The reference defines resource resolution, host capabilities, and model configuration.
-
+Before selecting models or delegating, reuse the caller's resolved PStack role map. If none was passed, read `setup-pstack/references/model-config.md` and `poteto-mode/references/host-runtime.md` through this skill's verified PStack namespace or skill-directory parent.
 
 # Arena
 
@@ -27,7 +26,7 @@ The N candidates will receive the same prompt, so the prompt is the contract.
 
 1. State the artifact each candidate is producing.
 2. Derive the rubric. State what success looks like for *this* task, then turn it into 3-6 concrete gradeable criteria. The rubric is the picker's tool in Phase D. Candidates only see the task.
-3. Pick the runners. Use `arena runners` from the resolved PStack role map when configured. Otherwise default to four independent `gpt-6-astra` runners at max reasoning, so candidates have the same model capability. Spawn more when the arena covers multiple design directions. Each runner receives the same task in its own context.
+3. Pick the runners. Use `arena runners` from the resolved PStack role map when configured. The bundled map has four independent runners with the same model capability. Spawn more when the arena covers multiple design directions. Each runner receives the same task in its own context.
 4. Assign output paths. Each candidate writes to its own location (a git worktree where possible, otherwise `/tmp/arena-<slug>/candidate-<n>/`), per the **separate-before-serializing-shared-state** principle skill.
 
 ## Phase B: Fan out

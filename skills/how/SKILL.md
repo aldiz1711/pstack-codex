@@ -3,8 +3,7 @@ name: how
 description: "Use for \"how does X work\", code walkthroughs before changing something, and placement / ownership / layering questions (\"where should this live\", \"which package owns this\", \"is this the right layer\"). Explains subsystem architecture, runtime flow, onboarding mental models. Use why for motivation."
 ---
 
-Before applying this workflow, read `poteto-mode/references/host-runtime.md`. Resolve `poteto-mode` from the catalog or explicitly as a sibling under this loaded PStack skill's verified package namespace or skill-directory parent. Do not guess a plugin ID. The reference defines resource resolution, host capabilities, and model configuration.
-
+Before selecting models or delegating, reuse the caller's resolved PStack role map. If none was passed, read `setup-pstack/references/model-config.md` and `poteto-mode/references/host-runtime.md` through this skill's verified PStack namespace or skill-directory parent.
 
 # How
 
@@ -26,7 +25,7 @@ When in doubt, take the simple path.
 Decompose the question into 2 to 4 exploration angles, each a distinct slice of the subsystem. Spawn all explorers in a single message:
 
 - Codex agent `pstack-readonly` with a read-only sandbox
-- configured how-explorer model and reasoning effort (default `gpt-6-luna` at xhigh reasoning)
+- configured how-explorer model and reasoning effort
 
 Each explorer gets the prompt in `references/explorer-prompt.md` with its angle filled in. Then go to Step 3.
 
@@ -35,7 +34,7 @@ Each explorer gets the prompt in `references/explorer-prompt.md` with its angle 
 Spawn one Codex subagent that explores and explains in one pass:
 
 - Codex agent `pstack-readonly` with a read-only sandbox
-- configured how-explainer model and reasoning effort (default `gpt-6-astra` at max reasoning)
+- configured how-explainer model and reasoning effort
 
 Build its prompt from `references/explainer-prompt.md` without the explorer-findings section. Go to Step 4.
 
@@ -44,7 +43,7 @@ Build its prompt from `references/explainer-prompt.md` without the explorer-find
 Once all explorers have returned, spawn one Codex subagent to synthesize their findings into one explanation:
 
 - Codex agent `pstack-readonly` with a read-only sandbox
-- configured how-explainer model and reasoning effort (default `gpt-6-astra` at max reasoning)
+- configured how-explainer model and reasoning effort
 
 Build its prompt from `references/explainer-prompt.md` with every explorer's findings filled in.
 

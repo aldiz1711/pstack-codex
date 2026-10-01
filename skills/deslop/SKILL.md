@@ -3,9 +3,6 @@ name: deslop
 description: Remove AI-generated code slop and clean up code style
 ---
 
-Before applying this workflow, read `poteto-mode/references/host-runtime.md`. Resolve `poteto-mode` from the catalog or explicitly as a sibling under this loaded PStack skill's verified package namespace or skill-directory parent. Do not guess a plugin ID. The reference defines resource resolution, host capabilities, and model configuration.
-
-
 # Remove AI code slop
 
 Check the diff against main and remove AI-generated slop introduced in the branch.

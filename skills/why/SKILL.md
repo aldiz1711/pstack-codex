@@ -3,8 +3,7 @@ name: why
 description: "Use for 'why does X work this way', 'why we picked Y', design rationale, regressions, postmortems, or data-backed thresholds. Discovers available MCPs and queries each evidence category (source control, issue tracker, long-form docs, real-time chat, infrastructure observability, error tracking, product analytics warehouse) in parallel, then returns a cited read on decisions and tradeoffs. Use how for runtime behavior."
 ---
 
-Before applying this workflow, read `poteto-mode/references/host-runtime.md`. Resolve `poteto-mode` from the catalog or explicitly as a sibling under this loaded PStack skill's verified package namespace or skill-directory parent. Do not guess a plugin ID. The reference defines resource resolution, host capabilities, and model configuration.
-
+Before selecting models or delegating, reuse the caller's resolved PStack role map. If none was passed, read `setup-pstack/references/model-config.md` and `poteto-mode/references/host-runtime.md` through this skill's verified PStack namespace or skill-directory parent.
 
 # Why
 
@@ -80,7 +79,7 @@ Aim for a complete **coverage map**, not a minimal one. Document the null, don't
 Launch matching investigators concurrently up to Codex's available agent limit. Queue the rest. Don't ask one agent to cover multiple MCPs.
 
 Subagent config (each):
-- configured why-investigators model and reasoning effort (default `gpt-6-luna` at xhigh reasoning)
+- configured why-investigators model and reasoning effort
 - instruction to read and report without writing; use any available MCP tool needed for the assigned category
 
 Each investigator gets:
@@ -123,7 +122,7 @@ If your scope assessment suggests a single-commit trivial target where the PR de
 
 Spawn one synthesizer subagent:
 
-- configured why-synthesizer model and reasoning effort (default `gpt-6-astra` at max reasoning)
+- configured why-synthesizer model and reasoning effort
 - instruction to read and report without writing; use available MCP tools to spot-verify citations
 
 The synthesizer gets:

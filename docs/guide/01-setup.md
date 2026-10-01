@@ -27,11 +27,13 @@ Run:
 $setup-pstack
 ```
 
-[`$setup-pstack`](../../skills/setup-pstack/SKILL.md) detects the models and reasoning efforts you have access to, asks for a budget, shows you each role (code delegates, judgment, the review panels), and asks what you want. The default budget is unlimited. Answer the questions. It preserves `~/.codex/pstack-models.md` on actual local Codex, or chooses a verified cloud user store with a known reload path. Without durable storage, it states that the map is session-scoped. All entrypoints explicitly load configuration. The trusted local hook is optional.
+[`$setup-pstack`](../../skills/setup-pstack/SKILL.md) detects the models and reasoning efforts you have access to, asks for a budget, shows you each role (code delegates, judgment, the review panels), and asks what you want. The default budget is unlimited. Answer the questions. It preserves `~/.codex/pstack-models.md` on actual local Codex. On ChatGPT cloud it can create or update your `pstack-models.md` in Library, then read its latest contents before model selection. It reuses the file identity and asks you to resolve duplicate filenames. If Library is unavailable, it reports session scope or uses your selected accessible configuration location. Poteto resolves once and passes choices to children; directly invoked delegation skills load the map when needed. Trusted local hooks remain optional.
+
+The [bundled role map](../../skills/setup-pstack/references/model-config.md) uses GPT-6.1 Sol max for ordinary roles and GPT-6 Astra max for the hardest tasks. Arena and Architect retain four-session panels. Independent reviewers and the Arena judge inherit the parent. Setup offers the example inline, without a separate preference profile.
 
 You only override what you care about. A role with no line in the rule keeps the skill's default. To restore a default later, delete that role's line, or just run `$setup-pstack` again.
 
-You might be wondering what happens if you use Auto. Set a role to `inherit-parent` or `auto` and pstack omits the subagent `model` field, so the subagent inherits your parent chat model. Both values mean the same thing, and neither is a model slug. For a panel role the value is a list, and one subagent runs per entry, so the list length sets the panel size. Setup also configures `swarm workers`, the default model for every `$swarm` worker unless a race names a model for each arm.
+You might be wondering what happens if you use Auto. Set a role to `inherit-parent` or `auto` and pstack omits both subagent model and reasoning-effort overrides, so the subagent inherits your parent chat model. Both values mean the same thing, and neither is a model slug. For a panel role the value is a list, and one subagent runs per entry, so the list length sets the panel size. Setup also configures `swarm workers`, the default model for every `$swarm` worker unless a race names a model for each arm.
 
 ## Accept the verification offer, or don't
 

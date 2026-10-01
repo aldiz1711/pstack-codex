@@ -3,8 +3,7 @@ name: maintain-verification-skill
 description: "Periodic pass that keeps a project's verification skill and feature map honest: parallel source readers per feature, one live session driving every feature, at most one PR of proven corrections. Use for $maintain-verification-skill or \"audit the verify skill\"."
 ---
 
-Before applying this workflow, read `poteto-mode/references/host-runtime.md`. Resolve `poteto-mode` from the catalog or explicitly as a sibling under this loaded PStack skill's verified package namespace or skill-directory parent. Do not guess a plugin ID. The reference defines resource resolution, host capabilities, and model configuration.
-
+Before selecting models or delegating, reuse the caller's resolved PStack role map. If none was passed, read `setup-pstack/references/model-config.md` and `poteto-mode/references/host-runtime.md` through this skill's verified PStack namespace or skill-directory parent.
 
 # Maintain a verification skill
 

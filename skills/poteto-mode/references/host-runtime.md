@@ -1,6 +1,6 @@
 # PStack host runtime
 
-Load this reference on each new task and pass its discovered locator to delegates. Read `references/model-config.md` before model selection. These references adapt the host boundary; the original skill and matched playbook own the engineering workflow. Do not load every skill or playbook.
+Load this reference when entering Poteto or directly invoking a delegation workflow without a supplied runtime context. Pass its discovered locator to delegates. Model loading is defined by `setup-pstack/references/model-config.md`. These references adapt the host boundary; the original skill and matched playbook own the engineering workflow. Do not load every skill or playbook.
 
 ## Resolve resources
 
@@ -28,18 +28,9 @@ Local-only syntax in a playbook is an example, not a capability grant. `/goal` m
 
 Existing connected tools may replace `gh` or `origin` for the same authorized read or write if they expose the required state and action. Keep the selected forge consistent and all head-SHA, blocker, review, and merge gates. A connector that exposes only checks cannot establish merge readiness. Missing CLI semantics remain a gap.
 
-## Load model configuration explicitly
+## Model configuration
 
-Use this precedence, highest first:
-
-1. The user's current task instructions.
-2. A role map explicitly supplied in the task brief or at a verified user configuration location.
-3. On an actual local Codex environment, `${CODEX_HOME:-~/.codex}/pstack-models.md` if accessible.
-4. The bundled `references/model-config.md` defaults.
-
-Read configuration on entry, before the first delegation, and after a configuration change or session resume. Pass the resolved role choices and their source to children. Hooks are optional local conveniences and are never required for activation or cloud configuration loading. An installed resource is not a writable user configuration store. Never claim a configuration persists across tasks without verifying its storage and reload path.
-
-For missing role lines, use the bundled role default. Lists keep repeated models and their requested panel size; queue waves against the observed concurrency limit. `inherit-parent` and `auto` omit both overrides. Validate each named model and effort against the actual launcher. An unavailable explicit choice is blocked unless the user has authorized a fallback. Do not change families merely to manufacture diversity.
+Read the [setup-owned model contract](../../setup-pstack/references/model-config.md) before selecting models unless the caller supplied a resolved map. Poteto passes the resolved choices and source to children. Local trusted hooks are conveniences; ChatGPT cloud uses explicit skill and configuration reads. Installed resources are not a writable user configuration store.
 
 ## Run packaged helpers only on a real executor
 

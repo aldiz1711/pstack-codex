@@ -3,9 +3,6 @@ name: typescript-best-practices
 description: TypeScript best practices. Use when reading or editing any .ts or .tsx file.
 ---
 
-Before applying this workflow, read `poteto-mode/references/host-runtime.md`. Resolve `poteto-mode` from the catalog or explicitly as a sibling under this loaded PStack skill's verified package namespace or skill-directory parent. Do not guess a plugin ID. The reference defines resource resolution, host capabilities, and model configuration.
-
-
 # TypeScript best practices
 
 Apply the **type-system-discipline** principle skill first.
