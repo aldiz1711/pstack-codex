@@ -169,8 +169,8 @@ export function mergeGateReason(
   row: T.PrSnapshot,
   allowDraft = false
 ): T.MergeGateReason | null {
-  if (row.kind === "merged") return null;
-  if (row.kind === "closed") return "closed-without-merge";
+  if (row.kind !== "open")
+    return row.kind === "closed" ? "closed-without-merge" : null;
   if (row.facts.isDraft && !allowDraft) return "draft-pr";
   if (row.facts.reviewDecision === "CHANGES_REQUESTED")
     return "changes-requested";
