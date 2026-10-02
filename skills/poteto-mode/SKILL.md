@@ -85,7 +85,7 @@ Read the leaf skill in full for any principle you apply. Each entry names when i
 
 ## Subagents
 
-Resolve a named sibling skill through its own PStack package or verified skills-directory parent, then read its own references. Reuse the verified installed namespace when a manual-only sibling is absent from the automatic catalog. Never resolve plugin resources from the task repository or invent a plugin ID.
+Read named PStack skills from this skill's installed namespace or sibling skill directories. Read each skill's references from its own package.
 
 **Use Codex agent `poteto-agent` for any subagent you spawn inside a playbook step** when named agent roles are available. Otherwise, instruct the subagent to read `references/poteto-agent.md` from this skill's owning package or verified installation directory, and this skill before work. `$poteto-mode` and `poteto-agent` use the same instructions. Routed workflow skills (`how`, `why`, `interrogate`, `reflect`, `swarm`) set their own agent role and model. Independent reviewers and verifiers follow the [independent review policy](references/independent-review.md). Respect what the skill prescribes, don't override to `poteto-agent`.
 

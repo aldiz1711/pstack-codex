@@ -264,7 +264,7 @@
     "skills/reflect/SKILL.md": {"non_model_sha256": "597421593485eb9e8b612f1bfab5f5d88b278a0383e81410bbade02c87136a23", "models": ["gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol"]},
     "skills/swarm/SKILL.md": {"non_model_sha256": "616e06a7d92ed56d5e223e023c7619fda9aa08abb81253b878456b7a04725a4b", "models": ["gpt-6.1-sol"]},
     "skills/setup-pstack/SKILL.md": {"non_model_sha256": "fd2d41bab88190554771b1bfe84b89093f053382d0cccf58788a0efe304eff51", "models": ["gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6-astra", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6-astra", "gpt-6-astra", "gpt-6-astra", "gpt-6-astra"]},
-    "skills/poteto-mode/SKILL.md": {"non_model_sha256": "d4ac21486902a01ca7647b4503405c4cb307db5bceafe05643708ccf9fdcf0d2", "models": ["gpt-6.1-sol", "gpt-6.1-sol", "gpt-6-astra"]},
+    "skills/poteto-mode/SKILL.md": {"non_model_sha256": "47c7e140ba899be49df4e265af07ade69196e732b4ff1712d752fa2af2fff84c", "models": ["gpt-6.1-sol", "gpt-6.1-sol", "gpt-6-astra"]},
     "skills/poteto-mode/playbooks/feature.md": {"non_model_sha256": "59569e5da94c9ddf4fc8b0dbfd8743f498b92448c8d7e7ab0c1588eb65d59a04", "models": ["gpt-6.1-sol"]},
     "skills/poteto-mode/playbooks/bug-fix.md": {"non_model_sha256": "d047d9fa6af717b1c187dbc62ac56fa01344a7d2fa5ed1e42c90d07599483b60", "models": ["gpt-6.1-sol"]},
     "skills/poteto-mode/playbooks/perf-issue.md": {"non_model_sha256": "1de10adce79e8995570d83897edcf80001c07d3d605d0ca428134c4a0378d497", "models": ["gpt-6.1-sol"]},
@@ -275,7 +275,7 @@
   },
   "approved_max_defaults": {
     "skills/how/SKILL.md": {"non_model_sha256": "88dddbdcb741ffcb23dea115ebcc45c97cffe4118ccd49344272f28138226d92", "models": ["gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol"]},
-    "skills/poteto-mode/SKILL.md": {"non_model_sha256": "474bd0a46cb002600db32958ccf4183618f9a957bc68aa087560911ace978397", "models": ["gpt-6.1-sol", "gpt-6.1-sol", "gpt-6-astra"]},
+    "skills/poteto-mode/SKILL.md": {"non_model_sha256": "47c7e140ba899be49df4e265af07ade69196e732b4ff1712d752fa2af2fff84c", "models": ["gpt-6.1-sol", "gpt-6.1-sol", "gpt-6-astra"]},
     "skills/poteto-mode/playbooks/bug-fix.md": {"non_model_sha256": "49fef8fc388597ea0594ae02e6e4462b5e3b8450fd4a4938d4a599cc18d9b902", "models": ["gpt-6.1-sol"]},
     "skills/poteto-mode/playbooks/feature.md": {"non_model_sha256": "087a999f04a722795cd3f859668c2d6cac3bcf5819b8ede135b6ef4442f7f0b9", "models": ["gpt-6.1-sol"]},
     "skills/poteto-mode/playbooks/hillclimb.md": {"non_model_sha256": "68b51b2c84777e130fdfa92b729f9bca925b1a54e4983bfd95cc5eb7de3fd6a1", "models": ["gpt-6.1-sol"]},
