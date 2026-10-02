@@ -5,7 +5,7 @@ description: Configure which Codex models pstack uses per role and at what reaso
 
 # Setup pstack
 
-Write `~/.codex/pstack-models.md`, the role map that pstack skills read before choosing a Codex subagent model and reasoning effort. The bundled `SessionStart` and `SubagentStart` hooks also load it into new Codex tasks and subagents. If `CODEX_HOME` is set, use that directory instead of `~/.codex` throughout this skill. Codex has no Cursor `.mdc` rule or model slug with effort encoded at the end.
+Setup is optional. The inline defaults work without a saved role map. On local Codex, write `~/.codex/pstack-models.md`, the role map that pstack skills read before choosing a Codex subagent model and reasoning effort. The bundled `SessionStart` and `SubagentStart` hooks also load it into new Codex tasks and subagents. If `CODEX_HOME` is set, use that directory instead of `~/.codex` throughout this skill. On a cloud host without the local home-directory route, keep the chosen map in the current task or use an accessible user-selected configuration location. Verify any claimed storage and reload route. Local hooks are not a cloud startup mechanism. Codex has no Cursor `.mdc` rule or model slug with effort encoded at the end.
 
 ## Steps
 
@@ -15,7 +15,7 @@ Enumerate the model names and reasoning efforts accepted by the current Codex su
 
 ### 2. Load current state
 
-If `~/.codex/pstack-models.md` exists, read its budget and role values. Otherwise start from the `unlimited (max)` budget and role defaults in step 5. Keep any role that the user previously changed when rerunning setup.
+On local Codex, if `~/.codex/pstack-models.md` exists, read its budget and role values. On cloud, read the current task map or the explicitly selected accessible user map when one exists. Otherwise start from the `unlimited (max)` budget and role defaults in step 5. Keep any role that the user previously changed when rerunning setup.
 
 ### 3. Budget, map, and confirm
 
@@ -31,26 +31,26 @@ Every named model and effort must be supported by the current Codex client. `inh
 
 ### 5. Write the role map
 
-Overwrite `~/.codex/pstack-models.md` so reruns stay idempotent. This is PStack's role map, loaded by the bundled hooks and read by its skills; Codex's actual subagent calls receive separate `model` and reasoning-effort values. A role with no line keeps its skill default. Format:
+On local Codex, overwrite `~/.codex/pstack-models.md` so reruns stay idempotent. On cloud, update the confirmed user-selected target or return a clearly labeled task-scoped map; do not write into installed plugin resources. This is PStack's role map, loaded by the bundled hooks and read by its skills; Codex's actual subagent calls receive separate `model` and reasoning-effort values. A role with no line keeps its skill default. Format:
 
 ```text
 # pstack model configuration. Delete a line to use the skill default.
 # budget: unlimited (max)
-feature, refactoring: gpt-6-luna | xhigh
-bug-fix: gpt-6-luna | xhigh
-perf-issue: gpt-6-luna | xhigh
-hillclimb: gpt-6-luna | xhigh
-judgment and prose: gpt-6-astra | max
+feature, refactoring: gpt-6.1-sol | max
+bug-fix: gpt-6.1-sol | max
+perf-issue: gpt-6.1-sol | max
+hillclimb: gpt-6.1-sol | max
+judgment and prose: gpt-6.1-sol | max
 hardest tasks: gpt-6-astra | max
-how explorer: gpt-6-luna | xhigh
-how explainer: gpt-6-astra | max
-why investigators: gpt-6-luna | xhigh
-why synthesizer: gpt-6-astra | max
-reflect tooling: gpt-6-sol | max
-reflect judgment, divergent, synthesizer: gpt-6-astra | max
-arena runners: gpt-6-astra | max, gpt-6-astra | max, gpt-6-astra | max, gpt-6-astra | max
+how explorer: gpt-6.1-sol | max
+how explainer: gpt-6.1-sol | max
+why investigators: gpt-6.1-sol | max
+why synthesizer: gpt-6.1-sol | max
+reflect tooling: gpt-6.1-sol | max
+reflect judgment, divergent, synthesizer: gpt-6.1-sol | max
+arena runners: gpt-6.1-sol | max, gpt-6.1-sol | max, gpt-6.1-sol | max, gpt-6.1-sol | max
 arena cross-judge pool: inherit-parent
-swarm workers: gpt-6-luna | xhigh
+swarm workers: gpt-6.1-sol | max
 architect runners: gpt-6-astra | max, gpt-6-astra | max, gpt-6-astra | max, gpt-6-astra | max
 interrogate reviewers: inherit-parent
 ```
@@ -59,7 +59,7 @@ Use only confirmed available combinations. If a default is unavailable, choose a
 
 ### 6. Confirm
 
-Tell the user the role map was written. The bundled hook loads it when a Codex task starts, resumes, or compacts, and when a subagent starts. Codex requires the user to review and trust a new or changed plugin hook before it runs; direct them to Codex's hook review (`/hooks` in the CLI) if this hook is pending. Do not claim automatic loading until the hook is trusted. Re-running this skill updates the model map without changing the hook definition.
+Report the verified target or task scope. Read back saved choices before claiming that they were written. On local Codex, the bundled hook loads it when a Codex task starts, resumes, or compacts, and when a subagent starts. On cloud, pass the selected role choices explicitly to delegates; do not claim automatic cross-task loading without a verified host route. Codex requires the user to review and trust a new or changed plugin hook before it runs; direct them to Codex's hook review (`/hooks` in the CLI) if this hook is pending. Do not claim automatic loading until the hook is trusted. Re-running this skill updates the model map without changing the hook definition.
 
 ### 7. Offer a verification skill (optional)
 

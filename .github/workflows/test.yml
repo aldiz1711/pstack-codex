@@ -1,0 +1,32 @@
+name: Validate PStack
+
+on:
+  pull_request:
+  push:
+    branches: [main, feat/cloud-skill-compat]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6
+        with:
+          bun-version: 1.4.2
+      - name: Validate complete package and reproducibility
+        run: |
+          python3 scripts/package-plugin.py
+          python3 -m unittest discover -s tests -v
+          python3 scripts/package-plugin.py --output "$RUNNER_TEMP/pstack-codex-account.zip"
+      - name: Test unchanged working-fork Bun helpers
+        working-directory: skills/poteto-mode/scripts
+        run: |
+          bun install --frozen-lockfile
+          bun run test
+          bun run typecheck

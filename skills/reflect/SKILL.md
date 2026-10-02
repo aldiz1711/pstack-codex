@@ -23,15 +23,15 @@ Launch three Codex subagents concurrently when the available concurrency permits
 
 | Lens | `model` | Prompt template |
 |---|---|---|
-| Judgment | your configured reflect-judgment model (default `gpt-6-astra` at max reasoning) | `references/judgment-reviewer.md` |
-| Tooling | your configured reflect-tooling model (default `gpt-6-sol` at max reasoning) | `references/tooling-reviewer.md` |
-| Divergent | your configured reflect-judgment model (default `gpt-6-astra` at max reasoning) | `references/divergent-reviewer.md` |
+| Judgment | your configured reflect-judgment model (default `gpt-6.1-sol` at max reasoning) | `references/judgment-reviewer.md` |
+| Tooling | your configured reflect-tooling model (default `gpt-6.1-sol` at max reasoning) | `references/tooling-reviewer.md` |
+| Divergent | your configured reflect-judgment model (default `gpt-6.1-sol` at max reasoning) | `references/divergent-reviewer.md` |
 
 Pass each template verbatim, substituting the task history or digest where marked. Reviewers return findings in the Codex subagent response body.
 
 ### 3. Synthesize
 
-Launch one Codex subagent using your configured reflect-judgment model (default `gpt-6-astra` at max reasoning). The synthesizer may use available MCP tools to spot-verify citations. Instruct it not to write. Use `references/synthesizer.md` verbatim, with each reviewer's full output inlined where marked. The synthesizer returns a structured Accepted / Rejected / Backlog list.
+Launch one Codex subagent using your configured reflect-judgment model (default `gpt-6.1-sol` at max reasoning). The synthesizer may use available MCP tools to spot-verify citations. Instruct it not to write. Use `references/synthesizer.md` verbatim, with each reviewer's full output inlined where marked. The synthesizer returns a structured Accepted / Rejected / Backlog list.
 
 ### 4. Structural enforcement check
 

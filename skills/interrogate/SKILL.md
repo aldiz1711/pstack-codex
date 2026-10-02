@@ -5,7 +5,7 @@ description: "Use for \"interrogate\", \"adversarial review\", \"multi-model rev
 
 # Interrogate
 
-Review code changes through separate, read-only sessions under the [independent review policy](../poteto-mode/references/independent-review.md). Each reviewer gets the same prompt and rubric. Reviewers may use the same model. Model diversity is optional.
+Review code changes through separate sessions under the [independent review policy](../poteto-mode/references/independent-review.md). Prefer enforced read-only access; when unavailable, use its instruction-only no-write fallback and label that mode. Each reviewer gets the same prompt and rubric. Reviewers may use the same model. Model diversity is optional.
 
 The deliverable is a synthesized verdict. Do NOT auto-apply changes.
 
@@ -35,7 +35,7 @@ Write one clear paragraph. If you're unsure about the intent, ask the user befor
 Use the `interrogate reviewers` list from `~/.codex/pstack-models.md` when present, one reviewer per entry, including repeated models. Without that line, start with one reviewer on the parent model and effort. Add reviewers when the scope or risk needs more coverage, respecting any count the user requests. Label sessions Reviewer A, B, and so on. Launch them up to the available Codex agent limit, queuing the rest.
 
 For each reviewer:
-- use Codex agent `pstack-readonly` in an effective read-only sandbox under the independent review policy
+- use registered Codex agent `pstack-readonly` or an equivalent supported separate reviewer under the independent review policy, with enforced read-only access when supported and the instruction-only no-write fallback otherwise
 - configured model and reasoning effort from the `interrogate reviewers` entry, or the parent model and effort with no configured line
 - set `fork_turns: "none"` and provide source context without the author's verdict or other reviewers' findings
 - pass the same review prompt and rubric
@@ -86,7 +86,7 @@ Present the verdict in this structure:
 > [The stated intent paragraph from Step 2]
 
 ### Reviewers
-- Reviewer [label]: [model name], [reasoning effort], [N findings] (one bullet per reviewer)
+- Reviewer [label]: [model name], [reasoning effort], [effective isolation mode], [N findings] (one bullet per reviewer)
 
 ### Act On
 [Findings that should be addressed. For each: description, reviewer labels and models, supporting evidence, why it matters.]
