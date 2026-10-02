@@ -130,23 +130,36 @@ class WorkingForkFidelityTests(unittest.TestCase):
         self.assertIn("Without a configured review role, use the parent model and effort", policy)
         self.assertIn("`inherit-parent` and `auto` mean to omit both overrides", policy)
 
-    def test_plan_checker_accepts_default_and_configured_efforts(self):
+    def test_plan_checker_accepts_default_and_configured_models_and_efforts(self):
         text = (ROOT / "skills/poteto-mode/playbooks/multi-phase-plan.md").read_text()
         template = text.split("````markdown\n", 1)[1].split("\n````", 1)[0]
         template = template.replace("independent runtime: separate", "independent runtime with separate")
         checker = ROOT / "skills/poteto-mode/scripts/check-plan.mjs"
+        declaration = "Ten lanes on `gpt-6.1-sol` at max reasoning at the PR head"
+        choices = [("gpt-6.1-sol", effort) for effort in ["none", "minimal", "low", "medium", "high", "xhigh", "max", "ultra"]]
+        choices += [("gpt-6-luna", "xhigh"), ("gpt-6-astra", "high"), ("provider/model-v2", "medium")]
         with tempfile.TemporaryDirectory() as directory:
             plan = Path(directory) / "plan.md"
-            for effort in ["max", "xhigh", "high", "medium", "low"]:
-                with self.subTest(effort=effort):
-                    plan.write_text(template.replace("at max reasoning at the PR head", f"at {effort} reasoning at the PR head"))
+            for model, effort in choices:
+                with self.subTest(model=model, effort=effort):
+                    plan.write_text(template.replace(declaration, f"Ten lanes on `{model}` at {effort} reasoning at the PR head"))
                     result = subprocess.run(["node", str(checker), str(plan)], capture_output=True, text=True)
                     self.assertEqual(result.returncode, 0, result.stderr)
-            for broken in [template.replace("at max reasoning", "at turbo reasoning"),
-                           template.replace("- [ ] Lane 10.", "- [ ] Lane 9.")]:
-                plan.write_text(broken)
-                result = subprocess.run(["node", str(checker), str(plan)], capture_output=True, text=True)
-                self.assertNotEqual(result.returncode, 0)
+            for label, broken, problem in [
+                ("invalid effort", template.replace("at max reasoning", "at turbo reasoning"), "model and reasoning effort"),
+                ("missing effort", template.replace("at max reasoning", "reasoning"), "model and reasoning effort"),
+                ("empty model", template.replace(declaration, "Ten lanes on `` at max reasoning at the PR head"), "model and reasoning effort"),
+                ("blank model", template.replace(declaration, "Ten lanes on ` ` at max reasoning at the PR head"), "model and reasoning effort"),
+                ("unquoted model", template.replace(declaration, "Ten lanes on gpt-6-luna at xhigh reasoning at the PR head"), "model and reasoning effort"),
+                ("missing lane", template.replace("- [ ] Lane 10.", "- [ ] Lane 9."), "expected 1 to 10"),
+                ("missing screenshot", template.replace("Save `<slug>.png`.", "", 1), "names no screenshot"),
+                ("missing predicate", template.replace("Pass when <predicate>.", "", 1), "has no pass predicate"),
+            ]:
+                with self.subTest(invalid=label):
+                    plan.write_text(broken)
+                    result = subprocess.run(["node", str(checker), str(plan)], capture_output=True, text=True)
+                    self.assertNotEqual(result.returncode, 0)
+                    self.assertIn(problem, result.stderr)
 
     def test_packaged_role_fallbacks_keep_the_original_prompt(self):
         for source, target in [("agents/poteto-agent.md", "skills/poteto-mode/references/poteto-agent.md"),
