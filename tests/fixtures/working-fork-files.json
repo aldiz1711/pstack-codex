@@ -274,24 +274,16 @@
     "skills/poteto-mode/scripts/check-plan.mjs": {"non_model_sha256": "d8ceeea2aaa33dcac67a5aef655982c1121b4ef88188b4213fe37fdcc036a3e1", "models": ["gpt-6.1-sol"]}
   },
   "approved_max_defaults": {
-    "README.md": {"non_model_sha256": "9cd95349fd8f23774082687889502bc75213c1829d579f549af327db64409897", "models": ["GPT-6.1 Sol", "GPT-6 Astra", "GPT-6.1 Sol"]},
-    "docs/guide/01-setup.md": {"non_model_sha256": "58021a837df5902751c98eb1604298ea8d83bbe9714d9d79a9d5259c2061719a", "models": []},
-    "docs/guide/04-design.md": {"non_model_sha256": "4d1c1245af58000316ac8cf9fa3bf8d502393b8eb2c6c6015f44174738f15d82", "models": ["gpt-6.1-sol"]},
-    "docs/guide/07-overnight.md": {"non_model_sha256": "be8a98bbb68cf904a3272561c073637dd5e75c70ca6290382dc3040800e39d65", "models": []},
-    "skills/arena/SKILL.md": {"non_model_sha256": "65e37fc80eaadcf6cc0124f3f3a750ec86822887704832e96f5ce1ccf7e51b11", "models": ["gpt-6.1-sol"]},
     "skills/how/SKILL.md": {"non_model_sha256": "88dddbdcb741ffcb23dea115ebcc45c97cffe4118ccd49344272f28138226d92", "models": ["gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol"]},
-    "skills/interrogate/SKILL.md": {"non_model_sha256": "e098e9c82ce3dcf5a5998e4e87c4fb2ccf17def84fb83a54ab9ff152c94e80a8", "models": []},
-    "skills/poteto-mode/SKILL.md": {"non_model_sha256": "f13fa8e6d822a2f0bd6222332b3f8322d3a665ad46d364c3d2898c314d862256", "models": ["gpt-6.1-sol", "gpt-6.1-sol", "gpt-6-astra"]},
+    "skills/poteto-mode/SKILL.md": {"non_model_sha256": "474bd0a46cb002600db32958ccf4183618f9a957bc68aa087560911ace978397", "models": ["gpt-6.1-sol", "gpt-6.1-sol", "gpt-6-astra"]},
     "skills/poteto-mode/playbooks/bug-fix.md": {"non_model_sha256": "49fef8fc388597ea0594ae02e6e4462b5e3b8450fd4a4938d4a599cc18d9b902", "models": ["gpt-6.1-sol"]},
     "skills/poteto-mode/playbooks/feature.md": {"non_model_sha256": "087a999f04a722795cd3f859668c2d6cac3bcf5819b8ede135b6ef4442f7f0b9", "models": ["gpt-6.1-sol"]},
     "skills/poteto-mode/playbooks/hillclimb.md": {"non_model_sha256": "68b51b2c84777e130fdfa92b729f9bca925b1a54e4983bfd95cc5eb7de3fd6a1", "models": ["gpt-6.1-sol"]},
     "skills/poteto-mode/playbooks/multi-phase-plan.md": {"non_model_sha256": "601ef52badba0b535671144599320bc83c66ec6f8ede11a6355f35e3f3ddcab4", "models": ["gpt-6.1-sol", "gpt-6.1-sol"]},
     "skills/poteto-mode/playbooks/perf-issue.md": {"non_model_sha256": "9482d8c7e322cd6853bf3d234654e3e76e1f5c8211b3dbce292c527a6b7a5619", "models": ["gpt-6.1-sol"]},
     "skills/poteto-mode/playbooks/refactoring.md": {"non_model_sha256": "638b7293c5eea145767686ef8f617f3578cdd3ce560c5d81660d15cd29aa7f1b", "models": ["gpt-6.1-sol"]},
-    "skills/poteto-mode/references/independent-review.md": {"non_model_sha256": "0731895364725dae4fd0df911758711e549c1a5d1c272b6724bd79eaf84bd841", "models": []},
     "skills/poteto-mode/scripts/check-plan.mjs": {"non_model_sha256": "e7a540328e01653fea2d027f85c031fb3d88072a2c00b6a37ae1ca88d45b3fce", "models": ["gpt-6.1-sol"]},
-    "skills/setup-pstack/SKILL.md": {"non_model_sha256": "333a8926ba213d316ceefff00e168e6c4398c5252043f84053398bb3d7d47f48", "models": ["gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6-astra", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6-astra", "gpt-6-astra", "gpt-6-astra", "gpt-6-astra"]},
-    "skills/show-me-your-work/SKILL.md": {"non_model_sha256": "e17b88f942f2360bf95ed090c8638e7bdecfd2422fd7c135a3e1d2b219ada8dd", "models": []},
+    "skills/setup-pstack/SKILL.md": {"non_model_sha256": "a60cf139a54766f8d94eb3df711d407cd321e40d50c217624c46236a57ad9d50", "models": ["gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6-astra", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6-astra", "gpt-6-astra", "gpt-6-astra", "gpt-6-astra"]},
     "skills/swarm/SKILL.md": {"non_model_sha256": "8f408317c9972ba6cc6a63b348b2aeadcc68c801c995f70ecc12555b4324a10a", "models": ["gpt-6.1-sol"]},
     "skills/why/SKILL.md": {"non_model_sha256": "37f0ea74e671d91ee383eb0dee8b81072f476b47eeb5ded3643a524460b67640", "models": ["gpt-6.1-sol", "gpt-6.1-sol"]}
   }

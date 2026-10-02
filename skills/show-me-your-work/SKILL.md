@@ -63,7 +63,7 @@ Fix the log, not the story. If the work diverged from what a row claims, the row
 
 ## Independent review of the trail
 
-Before handing back, follow the [independent review policy](../poteto-mode/references/independent-review.md). This skill has no separate model role, so use the parent model at max reasoning unless the user specifies a reviewer. The reviewer reads the audit trail and the run's transcript, then flags what the user should pay attention to.
+Before handing back, follow the [independent review policy](../poteto-mode/references/independent-review.md). This skill has no separate model role, so use the parent model and effort unless the user specifies a reviewer. The reviewer reads the audit trail and the run's transcript, then flags what the user should pay attention to.
 
 - Decisions logged with weak or absent evidence.
 - Verification steps skipped or claimed without proof in the transcript.

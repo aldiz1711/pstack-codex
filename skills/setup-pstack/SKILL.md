@@ -11,7 +11,7 @@ Setup is optional. The inline defaults work without a saved role map. On local C
 
 ### 1. Detect available models
 
-Enumerate the model names and reasoning efforts accepted by the current Codex subagent tool or model picker. Never write a model or effort you have not confirmed is available. `inherit-parent` and `auto` omit the model override. Without an explicit effort, they omit both overrides.
+Enumerate the model names and reasoning efforts accepted by the current Codex subagent tool or model picker. Never write a model or effort you have not confirmed is available. `inherit-parent` and `auto` mean to omit both overrides and are always valid.
 
 ### 2. Load current state
 
@@ -21,13 +21,13 @@ On local Codex, if `~/.codex/pstack-models.md` exists, read its budget and role 
 
 **(a) Ask for a budget.** Offer the four original options: `unlimited — keep max`, `large — xhigh reasoning`, `medium — high reasoning`, and `small — medium reasoning`. The default is `unlimited — keep max` when the user does not choose another budget. Name the current budget when one is recorded.
 
-**(b) Apply it.** Store the reasoning effort separately from the model name. `unlimited` defaults to `max`; explicit role overrides take precedence. `large`, `medium`, and `small` target `xhigh`, `high`, and `medium`. If a model does not support the target effort, use its highest supported effort at or below the target or mark the role as needing a choice. Keep inherited model aliases; apply the budget to their explicit effort. A bare `inherit-parent` or `auto` still inherits both model and effort.
+**(b) Apply it.** Store the reasoning effort separately from the model name. `unlimited` leaves each role at its listed effort. `large`, `medium`, and `small` target `xhigh`, `high`, and `medium`. If a model does not support the target effort, use its highest supported effort at or below the target or mark the role as needing a choice. Do not change `inherit-parent` or `auto`.
 
-**(c) Show the roles and confirm.** Show every role with its model and effort, flagging unavailable choices. Offer the available models, supported efforts, `inherit-parent`, and `auto` as alternatives. Panel roles (arena runners, architect runners, interrogate reviewers) contain one entry per desired subagent, including repeated models. `arena cross-judge pool` contains choices from which Arena selects one. Independent reviews follow the [independent review policy](../poteto-mode/references/independent-review.md). They default to the parent model at max reasoning, with model diversity optional. The current Codex concurrency limit may require running a panel in waves.
+**(c) Show the roles and confirm.** Show every role with its model and effort, flagging unavailable choices. Offer the available models, supported efforts, `inherit-parent`, and `auto` as alternatives. Panel roles (arena runners, architect runners, interrogate reviewers) contain one entry per desired subagent, including repeated models. `arena cross-judge pool` contains choices from which Arena selects one. Independent reviews follow the [independent review policy](../poteto-mode/references/independent-review.md). They default to the parent model and effort, with model diversity optional. The current Codex concurrency limit may require running a panel in waves.
 
 ### 4. Validate
 
-Every named model and effort must be supported by the current Codex client. Bare `inherit-parent` and `auto` always pass; validate any explicit accompanying effort. Ask the user to choose again for an unavailable value.
+Every named model and effort must be supported by the current Codex client. `inherit-parent` and `auto` always pass. Ask the user to choose again for an unavailable value.
 
 ### 5. Write the role map
 
@@ -49,10 +49,10 @@ why synthesizer: gpt-6.1-sol | max
 reflect tooling: gpt-6.1-sol | max
 reflect judgment, divergent, synthesizer: gpt-6.1-sol | max
 arena runners: gpt-6.1-sol | max, gpt-6.1-sol | max, gpt-6.1-sol | max, gpt-6.1-sol | max
-arena cross-judge pool: inherit-parent | max
+arena cross-judge pool: inherit-parent
 swarm workers: gpt-6.1-sol | max
 architect runners: gpt-6-astra | max, gpt-6-astra | max, gpt-6-astra | max, gpt-6-astra | max
-interrogate reviewers: inherit-parent | max
+interrogate reviewers: inherit-parent
 ```
 
 Use only confirmed available combinations. If a default is unavailable, choose an equivalent the user can access or `inherit-parent` rather than writing a broken entry.

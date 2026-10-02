@@ -52,7 +52,7 @@ When you're back, ask for the run in review form:
 $show-me-your-work catch me up on what you did last night
 ```
 
-Before the skill hands back its summary, it spawns a separate, read-only reviewer to read the trail and transcript. The reviewer uses the parent model at max reasoning unless you specify another choice. The reply ends with an Attention section that names the reviewer model and lists what deserves your scrutiny. Read that section first, then the log rows it points at. You're auditing decisions, not re-reading the whole night.
+Before the skill hands back its summary, it spawns a separate, read-only reviewer to read the trail and transcript. The reviewer uses the parent model and effort unless you specify another choice. The reply ends with an Attention section that names the reviewer model and lists what deserves your scrutiny. Read that section first, then the log rows it points at. You're auditing decisions, not re-reading the whole night.
 
 ## When the night holds a queue, not a task
 

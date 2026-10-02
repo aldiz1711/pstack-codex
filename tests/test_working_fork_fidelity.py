@@ -53,7 +53,7 @@ class WorkingForkFidelityTests(unittest.TestCase):
 
     def test_review_fallback_preserves_unaffected_policy_and_prompt_text(self):
         regions = {
-            "skills/poteto-mode/references/independent-review.md": ([1, 2, 5], "297a03a3e6ac875f7506cebcf151f6d4cb5787187dd740ec1a1937f466fa90f9"),
+            "skills/poteto-mode/references/independent-review.md": ([1, 2], "c1ef0422eefe525cb92ffbd16a9587f8fa11d6dcd601e61ea78813855d7b1812"),
             "skills/how/references/explorer-prompt.md": ([5], "3a6965276d23be7d8da6c305bfd5d7bf29d2aef09e5dae4119463ac72022a02d"),
             "skills/how/references/explainer-prompt.md": ([11], "aab599104ee487378aad48e2cfab82a2d1f15ae41161891b87c74448b4fcd9f6"),
             "skills/interrogate/references/reviewer-prompt.md": ([15], "6178c9cd023c52fa0bb834a36877cdb3314f1e3c11dd18dc2a454ef7771f46ca"),
@@ -104,11 +104,11 @@ class WorkingForkFidelityTests(unittest.TestCase):
         self.assertEqual(roles["arena runners"], [("gpt-6.1-sol", "max")] * 4)
         self.assertEqual(roles["architect runners"], [("gpt-6-astra", "max")] * 4)
         for role in ["interrogate reviewers", "arena cross-judge pool"]:
-            self.assertEqual(roles[role], [("inherit-parent", "max")])
+            self.assertEqual(roles[role], [("inherit-parent",)])
         self.assertIn("# budget: unlimited (max)", block)
 
-    def test_unlimited_defaults_are_max_across_the_pack(self):
-        self.assertEqual(len(APPROVED_MAX_DEFAULTS), 20)
+    def test_explicit_model_defaults_are_max_and_inheritance_is_preserved(self):
+        self.assertEqual(len(APPROVED_MAX_DEFAULTS), 12)
         for path, expected in APPROVED_MAX_DEFAULTS.items():
             with self.subTest(resource=path):
                 text = (ROOT / path).read_text()
@@ -125,8 +125,10 @@ class WorkingForkFidelityTests(unittest.TestCase):
         self.assertTrue(efforts)
         setup = (ROOT / "skills/setup-pstack/SKILL.md").read_text()
         self.assertIn("`large`, `medium`, and `small` target `xhigh`, `high`, and `medium`", setup)
-        self.assertIn("explicit role overrides take precedence", setup)
-        self.assertIn("A bare `inherit-parent` or `auto` still inherits both model and effort", setup)
+        self.assertIn("Do not change `inherit-parent` or `auto`", setup)
+        policy = (ROOT / "skills/poteto-mode/references/independent-review.md").read_text()
+        self.assertIn("Without a configured review role, use the parent model and effort", policy)
+        self.assertIn("`inherit-parent` and `auto` mean to omit both overrides", policy)
 
     def test_plan_checker_accepts_default_and_configured_efforts(self):
         text = (ROOT / "skills/poteto-mode/playbooks/multi-phase-plan.md").read_text()
