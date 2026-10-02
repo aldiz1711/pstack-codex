@@ -8,7 +8,7 @@ Runtime verifiers use separate sessions with `fork_turns: "none"` and the same m
 
 ## Choose the model
 
-Follow the caller's configured reviewer or verifier model and reasoning effort. If an explicit choice is unavailable, report that review as blocked unless the user has authorized a fallback. Without a configured review role, use the parent model and effort. `inherit-parent` and `auto` mean to omit both overrides. Model diversity is optional. Do not choose a less capable model just to change families, or raise the reasoning budget without authorization. Separate sessions on the same model are valid reviews.
+Follow the caller's configured reviewer or verifier model and reasoning effort. If an explicit choice is unavailable, report that review as blocked unless the user has authorized a fallback. Without a configured review role, use the parent model at max reasoning. `inherit-parent` and `auto` omit the model override; pass an explicit effort when present, otherwise omit both overrides. Model diversity is optional. Do not choose a less capable model just to change families, or raise the reasoning budget without authorization. Separate sessions on the same model are valid reviews.
 
 ## Give the reviewer its own starting point
 

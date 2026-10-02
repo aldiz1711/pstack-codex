@@ -37,7 +37,7 @@ If a candidate fails to produce output, proceed with N-1 and note the dropout in
 
 ## Phase C: Cross-judge
 
-After all Phase B candidates complete, follow the [independent review policy](../poteto-mode/references/independent-review.md). Choose one configured model and effort from `arena cross-judge pool` in `~/.codex/pstack-models.md`, or use the parent model and effort when that line is absent. The judge may use the same model as the parent or runners. It sees the rubric and candidate artifacts by path label, records scores with evidence, then reads candidate rationales before recommending a base. Hold back the parent's pick until then. It runs in parallel with the parent's reading in Phase D, not with candidates still writing.
+After all Phase B candidates complete, follow the [independent review policy](../poteto-mode/references/independent-review.md). Choose one configured model and effort from `arena cross-judge pool` in `~/.codex/pstack-models.md`, or use the parent model at max reasoning when that line is absent. The judge may use the same model as the parent or runners. It sees the rubric and candidate artifacts by path label, records scores with evidence, then reads candidate rationales before recommending a base. Hold back the parent's pick until then. It runs in parallel with the parent's reading in Phase D, not with candidates still writing.
 
 ## Phase D: Pick a base
 

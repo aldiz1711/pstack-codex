@@ -46,7 +46,7 @@ Bun helpers require Bun, their locked dependencies, and the original forge acces
 - **Routes work through playbooks.** `$poteto-mode` covers investigation, bug fixes, features, refactoring, performance, PR babysitting, shipping, and longer autonomous runs. It stays active in the task until you opt out.
 - **Uses focused skills and principles.** `$how`, `$why`, `$architect`, `$arena`, `$swarm`, `$interrogate`, and the verification skills can also be called directly. The [guide](./docs/guide/README.md) and [`poteto-mode` skill](./skills/poteto-mode/SKILL.md) lead to the full instructions.
 - **Makes review and proof explicit.** Agents inspect diffs, check claims against the code, and exercise the real app where the playbook requires it. `$interrogate` runs PStack's local review panel.
-- **Lets you configure model roles.** `$setup-pstack` writes `~/.codex/pstack-models.md`. The current defaults use GPT-6.1 Sol for scoped code work and GPT-6 Astra for the hardest judgment and design tasks. Independent reviewers default to the parent model and reasoning effort. Explicit reviewer choices take precedence.
+- **Lets you configure model roles.** `$setup-pstack` writes `~/.codex/pstack-models.md`. The current defaults use GPT-6.1 Sol for scoped code work and GPT-6 Astra for the hardest judgment and design tasks. Independent reviewers default to the parent model at max reasoning. Explicit reviewer choices take precedence.
 
 For example:
 
@@ -68,7 +68,7 @@ PStack's playbooks, skill instructions, and engineering principles remain the so
 | Local code review | `$interrogate` keeps PStack's review workflow; Codex `/review` is also available. |
 | Automated GitHub PR review | Enable [Codex Cloud Code Review](https://developers.openai.com/codex/cloud/code-review) separately for the repository. PStack's babysit playbook then triages its review threads. |
 
-Cursor supports a wider mix of model providers. To keep Arena candidates at comparable capability in Codex, the default Arena runs four independent GPT-6.1 Sol candidates at max reasoning. Its separate, read-only judge uses the configured choice or the parent model and effort. `$setup-pstack` can change this panel. Model diversity is optional. Independent runs of one model can still share blind spots, so reviewers must support their findings with evidence.
+Cursor supports a wider mix of model providers. To keep Arena candidates at comparable capability in Codex, the default Arena runs four independent GPT-6.1 Sol candidates at max reasoning. Its separate, read-only judge uses the configured choice or the parent model at max reasoning. `$setup-pstack` can change this panel. Model diversity is optional. Independent runs of one model can still share blind spots, so reviewers must support their findings with evidence.
 
 ## Credits and licenses
 

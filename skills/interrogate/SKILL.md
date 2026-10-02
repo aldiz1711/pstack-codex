@@ -32,15 +32,15 @@ Write one clear paragraph. If you're unsure about the intent, ask the user befor
 
 ## Step 3, Spawn Reviewers
 
-Use the `interrogate reviewers` list from `~/.codex/pstack-models.md` when present, one reviewer per entry, including repeated models. Without that line, start with one reviewer on the parent model and effort. Add reviewers when the scope or risk needs more coverage, respecting any count the user requests. Label sessions Reviewer A, B, and so on. Launch them up to the available Codex agent limit, queuing the rest.
+Use the `interrogate reviewers` list from `~/.codex/pstack-models.md` when present, one reviewer per entry, including repeated models. Without that line, start with one reviewer on the parent model at max reasoning. Add reviewers when the scope or risk needs more coverage, respecting any count the user requests. Label sessions Reviewer A, B, and so on. Launch them up to the available Codex agent limit, queuing the rest.
 
 For each reviewer:
 - use registered Codex agent `pstack-readonly` or an equivalent supported separate reviewer under the independent review policy, with enforced read-only access when supported and the instruction-only no-write fallback otherwise
-- configured model and reasoning effort from the `interrogate reviewers` entry, or the parent model and effort with no configured line
+- configured model and reasoning effort from the `interrogate reviewers` entry, or the parent model at max reasoning with no configured line
 - set `fork_turns: "none"` and provide source context without the author's verdict or other reviewers' findings
 - pass the same review prompt and rubric
 
-If a configured model or effort is unavailable, report that reviewer as blocked. Use an alternative only when the user has authorized that fallback. Do not silently replace an explicit choice or raise its reasoning budget. If the configured value is `inherit-parent` or `auto`, omit both `model` and `reasoning_effort`. Never treat those aliases as broken slugs.
+If a configured model or effort is unavailable, report that reviewer as blocked. Use an alternative only when the user has authorized that fallback. Do not silently replace an explicit choice or raise its reasoning budget. For `inherit-parent` or `auto`, omit `model` and pass an explicit `reasoning_effort` when present. A bare alias omits both overrides. Never treat those aliases as broken slugs.
 
 Read `references/reviewer-prompt.md` and fill in the template with:
 1. The stated intent

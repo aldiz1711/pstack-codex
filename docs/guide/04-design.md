@@ -62,7 +62,7 @@ Reach for it when parallelism buys coverage or lets independent checks race. `$a
 $interrogate the whole branch, but skeptically. no nitpicks unless it's an actual bug or regression.
 ```
 
-[`$interrogate`](../../skills/interrogate/SKILL.md) sends the diff, intent, and rubric to reviewers in separate, read-only sessions. It uses your configured panel, or one reviewer on the parent model and effort when no panel is configured. Reviewers may use the same model. Model diversity is optional, and agreement alone does not prove correctness. The lead checks the evidence, sorts findings into `Act on`, `Consider`, `Noted`, and `Dismissed`, and applies nothing automatically. Each dismissal includes a reason.
+[`$interrogate`](../../skills/interrogate/SKILL.md) sends the diff, intent, and rubric to reviewers in separate, read-only sessions. It uses your configured panel, or one reviewer on the parent model at max reasoning when no panel is configured. Reviewers may use the same model. Model diversity is optional, and agreement alone does not prove correctness. The lead checks the evidence, sorts findings into `Act on`, `Consider`, `Noted`, and `Dismissed`, and applies nothing automatically. Each dismissal includes a reason.
 
 Read the dismissals too. The lead is a pragmatic senior engineer, not an oracle, and you can override it.
 

@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parent.parent
 BASELINE = json.loads((ROOT / "tests/fixtures/working-fork-files.json").read_text())
 MODEL_NAMES = r"gpt-6(?:\.1)?-(?:luna|astra|sol)|GPT-6(?:\.1)? (?:Luna|Astra|Sol)"
 APPROVED_MODEL_NAMES = BASELINE["approved_model_names"]
+APPROVED_MAX_DEFAULTS = BASELINE["approved_max_defaults"]
 HOST_ONLY = {
     ".codex-plugin/plugin.json", ".codex/agents/comment-sicko.toml", ".codex/agents/poteto-agent.toml",
     ".gitignore", "README.md", "docs/guide/01-setup.md", "skills/how/SKILL.md", "skills/no-comments/SKILL.md",
@@ -35,7 +36,7 @@ class WorkingForkFidelityTests(unittest.TestCase):
             with self.subTest(resource=name):
                 file = ROOT / name
                 self.assertTrue(file.is_file())
-                if name not in HOST_ONLY | APPROVED_REVIEW_FALLBACK | set(APPROVED_MODEL_NAMES):
+                if name not in HOST_ONLY | APPROVED_REVIEW_FALLBACK | set(APPROVED_MODEL_NAMES) | set(APPROVED_MAX_DEFAULTS):
                     self.assertEqual(hashlib.sha256(file.read_bytes()).hexdigest(), expected["sha256"])
                 self.assertEqual(bool(file.stat().st_mode & 0o111), expected["mode"] == "100755")
 
@@ -52,7 +53,7 @@ class WorkingForkFidelityTests(unittest.TestCase):
 
     def test_review_fallback_preserves_unaffected_policy_and_prompt_text(self):
         regions = {
-            "skills/poteto-mode/references/independent-review.md": ([1, 2], "c1ef0422eefe525cb92ffbd16a9587f8fa11d6dcd601e61ea78813855d7b1812"),
+            "skills/poteto-mode/references/independent-review.md": ([1, 2, 5], "297a03a3e6ac875f7506cebcf151f6d4cb5787187dd740ec1a1937f466fa90f9"),
             "skills/how/references/explorer-prompt.md": ([5], "3a6965276d23be7d8da6c305bfd5d7bf29d2aef09e5dae4119463ac72022a02d"),
             "skills/how/references/explainer-prompt.md": ([11], "aab599104ee487378aad48e2cfab82a2d1f15ae41161891b87c74448b4fcd9f6"),
             "skills/interrogate/references/reviewer-prompt.md": ([15], "6178c9cd023c52fa0bb834a36877cdb3314f1e3c11dd18dc2a454ef7771f46ca"),
@@ -74,13 +75,14 @@ class WorkingForkFidelityTests(unittest.TestCase):
                                  re.sub(MODEL_NAMES, "<model>", str(contract["models"])))
                 self.assertEqual(re.findall(r"^#{1,6} .+", text, re.MULTILINE), contract["headings"])
 
-    def test_approved_model_edits_change_only_names(self):
+    def test_approved_default_edits_preserve_models_and_other_content(self):
         self.assertEqual(len(APPROVED_MODEL_NAMES), 16)
         for path, expected in APPROVED_MODEL_NAMES.items():
             with self.subTest(resource=path):
                 text = (ROOT / path).read_text()
                 unchanged = re.sub(MODEL_NAMES, "<model>", text)
-                self.assertEqual(hashlib.sha256(unchanged.encode()).hexdigest(), expected["non_model_sha256"])
+                approved_hash = APPROVED_MAX_DEFAULTS.get(path, {}).get("non_model_sha256", expected["non_model_sha256"])
+                self.assertEqual(hashlib.sha256(unchanged.encode()).hexdigest(), approved_hash)
                 self.assertEqual(re.findall(MODEL_NAMES, text), expected["models"])
 
     def test_inline_default_map_and_panels_without_setup(self):
@@ -95,15 +97,54 @@ class WorkingForkFidelityTests(unittest.TestCase):
             for alias in aliases.split(", "):
                 roles[alias] = entries
         for role in ["feature", "refactoring", "bug-fix", "perf-issue", "hillclimb", "how explorer", "why investigators", "swarm workers"]:
-            self.assertEqual(roles[role], [("gpt-6.1-sol", "xhigh")])
+            self.assertEqual(roles[role], [("gpt-6.1-sol", "max")])
         for role in ["judgment and prose", "how explainer", "why synthesizer", "reflect tooling", "reflect judgment", "divergent", "synthesizer"]:
             self.assertEqual(roles[role], [("gpt-6.1-sol", "max")])
         self.assertEqual(roles["hardest tasks"], [("gpt-6-astra", "max")])
         self.assertEqual(roles["arena runners"], [("gpt-6.1-sol", "max")] * 4)
         self.assertEqual(roles["architect runners"], [("gpt-6-astra", "max")] * 4)
         for role in ["interrogate reviewers", "arena cross-judge pool"]:
-            self.assertEqual(roles[role], [("inherit-parent",)])
+            self.assertEqual(roles[role], [("inherit-parent", "max")])
         self.assertIn("# budget: unlimited (max)", block)
+
+    def test_unlimited_defaults_are_max_across_the_pack(self):
+        self.assertEqual(len(APPROVED_MAX_DEFAULTS), 20)
+        for path, expected in APPROVED_MAX_DEFAULTS.items():
+            with self.subTest(resource=path):
+                text = (ROOT / path).read_text()
+                self.assertEqual(hashlib.sha256(re.sub(MODEL_NAMES, "<model>", text).encode()).hexdigest(), expected["non_model_sha256"])
+                self.assertEqual(re.findall(MODEL_NAMES, text), expected["models"])
+        sources = list((ROOT / "skills").rglob("*.md")) + [ROOT / "skills/poteto-mode/scripts/check-plan.mjs"]
+        efforts = []
+        for path in sources:
+            text = path.read_text()
+            choices = re.findall(r"`gpt-[^`]+` at (\w+) reasoning", text)
+            efforts.extend(choices)
+            with self.subTest(resource=str(path.relative_to(ROOT))):
+                self.assertTrue(all(effort == "max" for effort in choices))
+        self.assertTrue(efforts)
+        setup = (ROOT / "skills/setup-pstack/SKILL.md").read_text()
+        self.assertIn("`large`, `medium`, and `small` target `xhigh`, `high`, and `medium`", setup)
+        self.assertIn("explicit role overrides take precedence", setup)
+        self.assertIn("A bare `inherit-parent` or `auto` still inherits both model and effort", setup)
+
+    def test_plan_checker_accepts_default_and_configured_efforts(self):
+        text = (ROOT / "skills/poteto-mode/playbooks/multi-phase-plan.md").read_text()
+        template = text.split("````markdown\n", 1)[1].split("\n````", 1)[0]
+        template = template.replace("independent runtime: separate", "independent runtime with separate")
+        checker = ROOT / "skills/poteto-mode/scripts/check-plan.mjs"
+        with tempfile.TemporaryDirectory() as directory:
+            plan = Path(directory) / "plan.md"
+            for effort in ["max", "xhigh", "high", "medium", "low"]:
+                with self.subTest(effort=effort):
+                    plan.write_text(template.replace("at max reasoning at the PR head", f"at {effort} reasoning at the PR head"))
+                    result = subprocess.run(["node", str(checker), str(plan)], capture_output=True, text=True)
+                    self.assertEqual(result.returncode, 0, result.stderr)
+            for broken in [template.replace("at max reasoning", "at turbo reasoning"),
+                           template.replace("- [ ] Lane 10.", "- [ ] Lane 9.")]:
+                plan.write_text(broken)
+                result = subprocess.run(["node", str(checker), str(plan)], capture_output=True, text=True)
+                self.assertNotEqual(result.returncode, 0)
 
     def test_packaged_role_fallbacks_keep_the_original_prompt(self):
         for source, target in [("agents/poteto-agent.md", "skills/poteto-mode/references/poteto-agent.md"),

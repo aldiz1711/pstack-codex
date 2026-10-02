@@ -21,7 +21,7 @@ When in doubt, take the simple path.
 Decompose the question into 2 to 4 exploration angles, each a distinct slice of the subsystem. Spawn all explorers in a single message:
 
 - Codex agent `pstack-readonly` or an equivalent separate delegate with enforced read-only access when supported, otherwise the instruction-only no-write fallback
-- configured how-explorer model and reasoning effort (default `gpt-6.1-sol` at xhigh reasoning)
+- configured how-explorer model and reasoning effort (default `gpt-6.1-sol` at max reasoning)
 
 Each explorer gets the prompt in `references/explorer-prompt.md` with its angle filled in. Then go to Step 3.
 
