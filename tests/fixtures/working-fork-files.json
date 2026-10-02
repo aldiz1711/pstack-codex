@@ -254,5 +254,23 @@
     "skills/typescript-best-practices/SKILL.md": {"frontmatter_sha256": "94ee5c9169fcd57932fd15d9170c19d177eefb5b2769fc839effef0838b62ac3", "models": [], "headings": ["# TypeScript best practices"]},
     "skills/unslop/SKILL.md": {"frontmatter_sha256": "9d4c07108cdda54c41aa9da84386667bc717f0fbf70e4023960f00e9fb362452", "models": [], "headings": ["# Unslop", "## Process", "## Patterns to detect and fix", "### Content", "### Language", "### Style", "### Communication artifacts", "### Filler", "### Jargon", "### Plain speech"]},
     "skills/why/SKILL.md": {"frontmatter_sha256": "63b008c04ba4d8363c2c0fcc7759195e09cc1b2b334dd8d0b3942ed7b0a47022", "models": ["`gpt-6-luna`", "`gpt-6-astra`"], "headings": ["# Why", "## Operating Posture", "## Step 1. Understand the Target and the Question", "## Step 2. Establish the Code Anchor", "# Blame target lines for last-touch commits", "# Full file history, with patches, through renames", "# Last N commits touching the file, PR numbers visible", "# Extract PR numbers from a commit message", "## Step 3. Spawn Parallel Investigators (default posture)", "### Discovery", "### Investigator roster. One per available evidence category", "### When to skip an investigator", "## Step 4. Synthesize", "## Step 5. Present", "## Output Format", "## Common Failure Modes to Avoid", "## Reference Files"]}
+  },
+  "approved_model_names": {
+    "README.md": {"non_model_sha256": "9e8ebde8b68b6b19219c3f15574b7a02ea81e875405d96697dbe72b0ed0ec388", "models": ["GPT-6.1 Sol", "GPT-6 Astra", "GPT-6.1 Sol"]},
+    "docs/guide/04-design.md": {"non_model_sha256": "f18d3843ab99561cf294fdcc742172814b1c8579dc699f0fb9191bf1a18a068d", "models": ["gpt-6.1-sol"]},
+    "skills/arena/SKILL.md": {"non_model_sha256": "d0e8530c63bf9fd8d9d552dd89471a076ca2cb886ec150980d33c0cf904899c7", "models": ["gpt-6.1-sol"]},
+    "skills/how/SKILL.md": {"non_model_sha256": "5dcc1829f8365141ea73e6fc0e75a31fe0519b911f66606c75a0e5a0875263b4", "models": ["gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol"]},
+    "skills/why/SKILL.md": {"non_model_sha256": "45b787323d1a13c234b266e996dead1c3fb2f7facf6f719a6b544477971e5ba9", "models": ["gpt-6.1-sol", "gpt-6.1-sol"]},
+    "skills/reflect/SKILL.md": {"non_model_sha256": "597421593485eb9e8b612f1bfab5f5d88b278a0383e81410bbade02c87136a23", "models": ["gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol"]},
+    "skills/swarm/SKILL.md": {"non_model_sha256": "616e06a7d92ed56d5e223e023c7619fda9aa08abb81253b878456b7a04725a4b", "models": ["gpt-6.1-sol"]},
+    "skills/setup-pstack/SKILL.md": {"non_model_sha256": "fd2d41bab88190554771b1bfe84b89093f053382d0cccf58788a0efe304eff51", "models": ["gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6-astra", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6.1-sol", "gpt-6-astra", "gpt-6-astra", "gpt-6-astra", "gpt-6-astra"]},
+    "skills/poteto-mode/SKILL.md": {"non_model_sha256": "d4ac21486902a01ca7647b4503405c4cb307db5bceafe05643708ccf9fdcf0d2", "models": ["gpt-6.1-sol", "gpt-6.1-sol", "gpt-6-astra"]},
+    "skills/poteto-mode/playbooks/feature.md": {"non_model_sha256": "59569e5da94c9ddf4fc8b0dbfd8743f498b92448c8d7e7ab0c1588eb65d59a04", "models": ["gpt-6.1-sol"]},
+    "skills/poteto-mode/playbooks/bug-fix.md": {"non_model_sha256": "d047d9fa6af717b1c187dbc62ac56fa01344a7d2fa5ed1e42c90d07599483b60", "models": ["gpt-6.1-sol"]},
+    "skills/poteto-mode/playbooks/perf-issue.md": {"non_model_sha256": "1de10adce79e8995570d83897edcf80001c07d3d605d0ca428134c4a0378d497", "models": ["gpt-6.1-sol"]},
+    "skills/poteto-mode/playbooks/refactoring.md": {"non_model_sha256": "946893399e27c1aeb4c7c2647c4b073dcd18e002d2aef357def91c0616e593ae", "models": ["gpt-6.1-sol"]},
+    "skills/poteto-mode/playbooks/hillclimb.md": {"non_model_sha256": "5c5a15a7ec025ce350fd5ddb49529287aad982a6f6d49e17b1746d74393264c4", "models": ["gpt-6.1-sol"]},
+    "skills/poteto-mode/playbooks/multi-phase-plan.md": {"non_model_sha256": "a8ceb8298a8b6fbe069403ac0699905f99ea807ef0fe6b166bae1f353a46bc88", "models": ["gpt-6.1-sol", "gpt-6.1-sol"]},
+    "skills/poteto-mode/scripts/check-plan.mjs": {"non_model_sha256": "d8ceeea2aaa33dcac67a5aef655982c1121b4ef88188b4213fe37fdcc036a3e1", "models": ["gpt-6.1-sol"]}
   }
 }

@@ -5,7 +5,7 @@ description: "Use for \"how does X work\", code walkthroughs before changing som
 
 # How
 
-Explore the codebase to answer "how does X work?" questions. Produce architectural explanations at the level of a senior engineer onboarding onto a subsystem, enough to build a working mental model, not so much that it reads like annotated source code.
+Explore the codebase to answer "how does X work?" questions. Produce architectural explanations at the level of a senior engineer onboarding onto a subsystem, enough to build a working mental model, not so much that it reads like annotated source code. Explorers and explainers follow the access and reporting rules in the [independent review policy](../poteto-mode/references/independent-review.md).
 
 ## Step 1. Assess Complexity
 
@@ -20,8 +20,8 @@ When in doubt, take the simple path.
 
 Decompose the question into 2 to 4 exploration angles, each a distinct slice of the subsystem. Spawn all explorers in a single message:
 
-- Codex agent `pstack-readonly` with a read-only sandbox, or an equivalent supported delegate with an enforced read-only boundary
-- configured how-explorer model and reasoning effort (default `gpt-6-luna` at xhigh reasoning)
+- Codex agent `pstack-readonly` or an equivalent separate delegate with enforced read-only access when supported, otherwise the instruction-only no-write fallback
+- configured how-explorer model and reasoning effort (default `gpt-6.1-sol` at xhigh reasoning)
 
 Each explorer gets the prompt in `references/explorer-prompt.md` with its angle filled in. Then go to Step 3.
 
@@ -29,8 +29,8 @@ Each explorer gets the prompt in `references/explorer-prompt.md` with its angle 
 
 Spawn one Codex subagent that explores and explains in one pass:
 
-- Codex agent `pstack-readonly` with a read-only sandbox, or an equivalent supported delegate with an enforced read-only boundary
-- configured how-explainer model and reasoning effort (default `gpt-6-astra` at max reasoning)
+- Codex agent `pstack-readonly` or an equivalent separate delegate with enforced read-only access when supported, otherwise the instruction-only no-write fallback
+- configured how-explainer model and reasoning effort (default `gpt-6.1-sol` at max reasoning)
 
 Build its prompt from `references/explainer-prompt.md` without the explorer-findings section. Go to Step 4.
 
@@ -38,8 +38,8 @@ Build its prompt from `references/explainer-prompt.md` without the explorer-find
 
 Once all explorers have returned, spawn one Codex subagent to synthesize their findings into one explanation:
 
-- Codex agent `pstack-readonly` with a read-only sandbox, or an equivalent supported delegate with an enforced read-only boundary
-- configured how-explainer model and reasoning effort (default `gpt-6-astra` at max reasoning)
+- Codex agent `pstack-readonly` or an equivalent separate delegate with enforced read-only access when supported, otherwise the instruction-only no-write fallback
+- configured how-explainer model and reasoning effort (default `gpt-6.1-sol` at max reasoning)
 
 Build its prompt from `references/explainer-prompt.md` with every explorer's findings filled in.
 

@@ -36,21 +36,21 @@ On local Codex, overwrite `~/.codex/pstack-models.md` so reruns stay idempotent.
 ```text
 # pstack model configuration. Delete a line to use the skill default.
 # budget: unlimited (max)
-feature, refactoring: gpt-6-luna | xhigh
-bug-fix: gpt-6-luna | xhigh
-perf-issue: gpt-6-luna | xhigh
-hillclimb: gpt-6-luna | xhigh
-judgment and prose: gpt-6-astra | max
+feature, refactoring: gpt-6.1-sol | xhigh
+bug-fix: gpt-6.1-sol | xhigh
+perf-issue: gpt-6.1-sol | xhigh
+hillclimb: gpt-6.1-sol | xhigh
+judgment and prose: gpt-6.1-sol | max
 hardest tasks: gpt-6-astra | max
-how explorer: gpt-6-luna | xhigh
-how explainer: gpt-6-astra | max
-why investigators: gpt-6-luna | xhigh
-why synthesizer: gpt-6-astra | max
-reflect tooling: gpt-6-sol | max
-reflect judgment, divergent, synthesizer: gpt-6-astra | max
-arena runners: gpt-6-astra | max, gpt-6-astra | max, gpt-6-astra | max, gpt-6-astra | max
+how explorer: gpt-6.1-sol | xhigh
+how explainer: gpt-6.1-sol | max
+why investigators: gpt-6.1-sol | xhigh
+why synthesizer: gpt-6.1-sol | max
+reflect tooling: gpt-6.1-sol | max
+reflect judgment, divergent, synthesizer: gpt-6.1-sol | max
+arena runners: gpt-6.1-sol | max, gpt-6.1-sol | max, gpt-6.1-sol | max, gpt-6.1-sol | max
 arena cross-judge pool: inherit-parent
-swarm workers: gpt-6-luna | xhigh
+swarm workers: gpt-6.1-sol | xhigh
 architect runners: gpt-6-astra | max, gpt-6-astra | max, gpt-6-astra | max, gpt-6-astra | max
 interrogate reviewers: inherit-parent
 ```

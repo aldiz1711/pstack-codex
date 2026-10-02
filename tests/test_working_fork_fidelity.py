@@ -10,12 +10,20 @@ import unittest
 
 ROOT = Path(__file__).resolve().parent.parent
 BASELINE = json.loads((ROOT / "tests/fixtures/working-fork-files.json").read_text())
+MODEL_NAMES = r"gpt-6(?:\.1)?-(?:luna|astra|sol)|GPT-6(?:\.1)? (?:Luna|Astra|Sol)"
+APPROVED_MODEL_NAMES = BASELINE["approved_model_names"]
 HOST_ONLY = {
     ".codex-plugin/plugin.json", ".codex/agents/comment-sicko.toml", ".codex/agents/poteto-agent.toml",
     ".gitignore", "README.md", "docs/guide/01-setup.md", "skills/how/SKILL.md", "skills/no-comments/SKILL.md",
     "skills/interrogate/SKILL.md", "skills/poteto-mode/playbooks/multi-phase-plan.md",
     "skills/poteto-mode/playbooks/orchestrate.md",
     "skills/poteto-mode/SKILL.md", "skills/setup-pstack/SKILL.md",
+}
+APPROVED_REVIEW_FALLBACK = {
+    "skills/poteto-mode/references/independent-review.md",
+    "skills/how/references/explorer-prompt.md",
+    "skills/how/references/explainer-prompt.md",
+    "skills/interrogate/references/reviewer-prompt.md",
 }
 
 
@@ -27,7 +35,7 @@ class WorkingForkFidelityTests(unittest.TestCase):
             with self.subTest(resource=name):
                 file = ROOT / name
                 self.assertTrue(file.is_file())
-                if name not in HOST_ONLY:
+                if name not in HOST_ONLY | APPROVED_REVIEW_FALLBACK | set(APPROVED_MODEL_NAMES):
                     self.assertEqual(hashlib.sha256(file.read_bytes()).hexdigest(), expected["sha256"])
                 self.assertEqual(bool(file.stat().st_mode & 0o111), expected["mode"] == "100755")
 
@@ -37,10 +45,24 @@ class WorkingForkFidelityTests(unittest.TestCase):
             paths = sorted(path for path in original if path.startswith(prefix))
             self.assertTrue(paths)
             for path in paths:
-                if path not in HOST_ONLY:
+                if path not in HOST_ONLY | set(APPROVED_MODEL_NAMES):
                     self.assertEqual(hashlib.sha256((ROOT / path).read_bytes()).hexdigest(), original[path]["sha256"])
         for forbidden in ["host-runtime.md", "model-config.md", "skill-index.json"]:
             self.assertEqual(list((ROOT / "skills").rglob(forbidden)), [])
+
+    def test_review_fallback_preserves_unaffected_policy_and_prompt_text(self):
+        regions = {
+            "skills/poteto-mode/references/independent-review.md": ([1, 2], "c1ef0422eefe525cb92ffbd16a9587f8fa11d6dcd601e61ea78813855d7b1812"),
+            "skills/how/references/explorer-prompt.md": ([5], "3a6965276d23be7d8da6c305bfd5d7bf29d2aef09e5dae4119463ac72022a02d"),
+            "skills/how/references/explainer-prompt.md": ([11], "aab599104ee487378aad48e2cfab82a2d1f15ae41161891b87c74448b4fcd9f6"),
+            "skills/interrogate/references/reviewer-prompt.md": ([15], "6178c9cd023c52fa0bb834a36877cdb3314f1e3c11dd18dc2a454ef7771f46ca"),
+        }
+        self.assertEqual(set(regions), APPROVED_REVIEW_FALLBACK)
+        for path, (changed_blocks, expected) in regions.items():
+            with self.subTest(resource=path):
+                blocks = (ROOT / path).read_text().split("\n\n")
+                unchanged = "\n\n".join(block for index, block in enumerate(blocks) if index not in changed_blocks)
+                self.assertEqual(hashlib.sha256(unchanged.encode()).hexdigest(), expected)
 
     def test_all_skill_models_frontmatter_and_workflow_headings_match(self):
         self.assertEqual(len(BASELINE["skill_contracts"]), 49)
@@ -48,8 +70,18 @@ class WorkingForkFidelityTests(unittest.TestCase):
             with self.subTest(skill=path):
                 text = (ROOT / path).read_text()
                 self.assertEqual(hashlib.sha256(text.split("---", 2)[1].encode()).hexdigest(), contract["frontmatter_sha256"])
-                self.assertEqual(re.findall(r"`gpt-[^`]+`", text), contract["models"])
+                self.assertEqual(re.sub(MODEL_NAMES, "<model>", str(re.findall(r"`gpt-[^`]+`", text))),
+                                 re.sub(MODEL_NAMES, "<model>", str(contract["models"])))
                 self.assertEqual(re.findall(r"^#{1,6} .+", text, re.MULTILINE), contract["headings"])
+
+    def test_approved_model_edits_change_only_names(self):
+        self.assertEqual(len(APPROVED_MODEL_NAMES), 16)
+        for path, expected in APPROVED_MODEL_NAMES.items():
+            with self.subTest(resource=path):
+                text = (ROOT / path).read_text()
+                unchanged = re.sub(MODEL_NAMES, "<model>", text)
+                self.assertEqual(hashlib.sha256(unchanged.encode()).hexdigest(), expected["non_model_sha256"])
+                self.assertEqual(re.findall(MODEL_NAMES, text), expected["models"])
 
     def test_inline_default_map_and_panels_without_setup(self):
         text = (ROOT / "skills/setup-pstack/SKILL.md").read_text()
@@ -63,12 +95,12 @@ class WorkingForkFidelityTests(unittest.TestCase):
             for alias in aliases.split(", "):
                 roles[alias] = entries
         for role in ["feature", "refactoring", "bug-fix", "perf-issue", "hillclimb", "how explorer", "why investigators", "swarm workers"]:
-            self.assertEqual(roles[role], [("gpt-6-luna", "xhigh")])
-        for role in ["judgment and prose", "hardest tasks", "how explainer", "why synthesizer", "reflect judgment", "divergent", "synthesizer"]:
-            self.assertEqual(roles[role], [("gpt-6-astra", "max")])
-        self.assertEqual(roles["reflect tooling"], [("gpt-6-sol", "max")])
-        for role in ["arena runners", "architect runners"]:
-            self.assertEqual(roles[role], [("gpt-6-astra", "max")] * 4)
+            self.assertEqual(roles[role], [("gpt-6.1-sol", "xhigh")])
+        for role in ["judgment and prose", "how explainer", "why synthesizer", "reflect tooling", "reflect judgment", "divergent", "synthesizer"]:
+            self.assertEqual(roles[role], [("gpt-6.1-sol", "max")])
+        self.assertEqual(roles["hardest tasks"], [("gpt-6-astra", "max")])
+        self.assertEqual(roles["arena runners"], [("gpt-6.1-sol", "max")] * 4)
+        self.assertEqual(roles["architect runners"], [("gpt-6-astra", "max")] * 4)
         for role in ["interrogate reviewers", "arena cross-judge pool"]:
             self.assertEqual(roles[role], [("inherit-parent",)])
         self.assertIn("# budget: unlimited (max)", block)

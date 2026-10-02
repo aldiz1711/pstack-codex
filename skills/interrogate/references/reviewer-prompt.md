@@ -28,6 +28,8 @@ You are reviewing whether the code achieves this intent well. Do NOT question th
 
 ## Instructions
 
+Inspect and report only. Do not edit or create files, create commits, push branches, post comments, or run commands that change repository or external state, including outputs and caches. Return findings in your reply and report the effective isolation mode supplied by the parent. Instruction-only no-write access is not sandbox-enforced isolation.
+
 Review the code through every lens in the rubric and the code-quality lens above that you find relevant. Do not force lenses that don't apply. A simple bug fix does not need paragraphs about architectural integrity.
 
 For each finding, provide:

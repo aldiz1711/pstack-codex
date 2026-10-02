@@ -77,7 +77,7 @@ Aim for a complete **coverage map**, not a minimal one. Document the null, don't
 Launch matching investigators concurrently up to Codex's available agent limit. Queue the rest. Don't ask one agent to cover multiple MCPs.
 
 Subagent config (each):
-- configured why-investigators model and reasoning effort (default `gpt-6-luna` at xhigh reasoning)
+- configured why-investigators model and reasoning effort (default `gpt-6.1-sol` at xhigh reasoning)
 - instruction to read and report without writing; use any available MCP tool needed for the assigned category
 
 Each investigator gets:
@@ -120,7 +120,7 @@ If your scope assessment suggests a single-commit trivial target where the PR de
 
 Spawn one synthesizer subagent:
 
-- configured why-synthesizer model and reasoning effort (default `gpt-6-astra` at max reasoning)
+- configured why-synthesizer model and reasoning effort (default `gpt-6.1-sol` at max reasoning)
 - instruction to read and report without writing; use available MCP tools to spot-verify citations
 
 The synthesizer gets:
